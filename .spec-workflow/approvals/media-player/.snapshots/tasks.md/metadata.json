@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/media-player/tasks.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-08T14:35:35.143Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762612535142_3u3xllong",
+      "approvalTitle": "Tasks Document - Media Player"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-08T14:36:57.936Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762612535142_3u3xllong",
+      "approvalTitle": "Tasks Document - Media Player"
+    }
+  ]
+}
