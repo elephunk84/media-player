@@ -17,6 +17,9 @@ export {
   type ValidationOptions,
 } from './validation';
 
+// Authentication middleware
+export { requireAuth, optionalAuth } from './auth';
+
 // Custom error classes
 export {
   AuthenticationError,
