@@ -7,3 +7,4 @@
 export { VideoController } from './videoController';
 export { ClipController } from './clipController';
 export { PlaylistController } from './playlistController';
+export { AuthController } from './authController';

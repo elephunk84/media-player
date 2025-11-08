@@ -7,3 +7,4 @@
 export { createVideosRouter } from './videos';
 export { createClipsRouter } from './clips';
 export { createPlaylistsRouter } from './playlists';
+export { createAuthRouter } from './auth';
