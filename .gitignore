@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+hls-cache/
+*.cache
+
+# Media files (for local testing)
+videos/
+*.mp4
+*.mkv
+*.avi
+*.mov
+
+# Docker
+.dockerignore
+
+# Temporary files
+tmp/
+temp/
