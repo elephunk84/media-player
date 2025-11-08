@@ -22,7 +22,7 @@ app.get('/api', (_req: Request, res: Response) => {
   res.json({
     message: 'Media Player API',
     version: '1.0.0',
-    status: 'running'
+    status: 'running',
   });
 });
 
@@ -33,18 +33,18 @@ app.use((_req: Request, res: Response) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Database type: ${process.env.DB_TYPE || 'not configured'}`);
+  console.info(`Server running on port ${PORT}`);
+  console.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.info(`Database type: ${process.env.DB_TYPE || 'not configured'}`);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
+  console.info('SIGTERM signal received: closing HTTP server');
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
-  console.log('SIGINT signal received: closing HTTP server');
+  console.info('SIGINT signal received: closing HTTP server');
   process.exit(0);
 });
