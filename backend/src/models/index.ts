@@ -1,25 +1,25 @@
 /**
- * Type Definitions
+ * Models Module
  *
- * This module exports all type definitions used throughout the application.
+ * This module exports all data model interfaces and types
+ * for the media player application.
  */
 
-// Database types
-export type { DatabaseConfig, ExecuteResult, MigrationStatus } from './database';
+// Video models
+export { Video, VideoMetadata, CreateVideoInput, UpdateVideoInput, VideoRow } from './Video';
 
-// Re-export all model types from models module
-export type {
-  Video,
-  VideoMetadata,
-  CreateVideoInput,
-  UpdateVideoInput,
-  VideoRow,
+// Clip models
+export {
   Clip,
   ClipMetadata,
   ClipWithVideo,
   CreateClipInput,
   UpdateClipInput,
   ClipRow,
+} from './Clip';
+
+// Playlist models
+export {
   Playlist,
   PlaylistClip,
   PlaylistWithClips,
@@ -29,6 +29,10 @@ export type {
   ReorderPlaylistInput,
   PlaylistRow,
   PlaylistClipRow,
+} from './Playlist';
+
+// User models
+export {
   User,
   UserPublic,
   CreateUserInput,
@@ -36,8 +40,13 @@ export type {
   ChangePasswordInput,
   AuthResponse,
   UserRow,
-  Migration,
-  MigrationRow,
+} from './User';
+
+// Migration models
+export { Migration, MigrationRow } from './Migration';
+
+// Search and filter types
+export {
   FilterOperator,
   MetadataField,
   FilterCondition,
@@ -50,4 +59,4 @@ export type {
   ClipSearchCriteria,
   PlaylistSearchCriteria,
   PaginatedResponse,
-} from '../models';
+} from './Search';
