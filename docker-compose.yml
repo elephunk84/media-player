@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # MySQL Database (primary)
+  mysql:
+    image: mysql:8
+    container_name: media-player-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-media_player}
+      MYSQL_USER: ${DB_USER:-mediauser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-mediapassword}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - media-network
+
+  # PostgreSQL Database (alternative for testing)
+  postgres:
+    image: postgres:14
+    container_name: media-player-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-media_player}
+      POSTGRES_USER: ${DB_USER:-mediauser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-mediapassword}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-mediauser}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - media-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: media-player-backend
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      DB_TYPE: ${DB_TYPE:-mysql}
+      DB_HOST: ${DB_TYPE:-mysql}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME:-media_player}
+      DB_USER: ${DB_USER:-mediauser}
+      DB_PASSWORD: ${DB_PASSWORD:-mediapassword}
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
+      VIDEO_MOUNT_PATH: /media
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/app/src:ro
+      - hls-cache:/app/cache
+      - ${VIDEO_PATH:-./videos}:/media:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - media-network
+    restart: unless-stopped
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: media-player-frontend
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - media-network
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+    driver: local
+  postgres-data:
+    driver: local
+  hls-cache:
+    driver: local
+
+networks:
+  media-network:
+    driver: bridge
