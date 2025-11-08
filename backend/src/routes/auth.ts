@@ -52,7 +52,7 @@ export function createAuthRouter(_adapter: DatabaseAdapter, authService: AuthSer
    *
    * Returns 200 OK to acknowledge logout.
    */
-  router.post('/logout', asyncHandler(authController.logout.bind(authController)));
+  router.post('/logout', authController.logout.bind(authController));
 
   /**
    * GET /api/auth/validate
@@ -63,11 +63,7 @@ export function createAuthRouter(_adapter: DatabaseAdapter, authService: AuthSer
    * Returns current user info if token is valid.
    * Returns 401 if token is invalid or missing.
    */
-  router.get(
-    '/validate',
-    requireAuth(authService),
-    asyncHandler(authController.validate.bind(authController))
-  );
+  router.get('/validate', requireAuth(authService), authController.validate.bind(authController));
 
   /* eslint-enable @typescript-eslint/no-misused-promises */
 

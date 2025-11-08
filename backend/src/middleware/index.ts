@@ -29,5 +29,8 @@ export {
   BadRequestError,
 } from './errors';
 
+// Logging middleware
+export { requestLogger } from './logging';
+
 // Common Joi schemas
 export * from './schemas';
