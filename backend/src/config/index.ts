@@ -11,6 +11,13 @@ export {
   type DatabaseType,
 } from './database';
 
+// Re-export adapter factory functions for convenience
+export {
+  createDatabaseAdapter,
+  isValidDatabaseType,
+  getSupportedDatabaseTypes,
+} from '../adapters/factory';
+
 // Future exports (will be implemented in later tasks):
 // export { loadJWTConfig } from './jwt';
 // export { loadServerConfig } from './server';
