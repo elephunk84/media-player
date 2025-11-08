@@ -5,3 +5,4 @@
  */
 
 export { createVideosRouter } from './videos';
+export { createClipsRouter } from './clips';

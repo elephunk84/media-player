@@ -5,3 +5,4 @@
  */
 
 export { VideoController } from './videoController';
+export { ClipController } from './clipController';
