@@ -8,7 +8,7 @@
 
 export { DatabaseAdapter } from './DatabaseAdapter';
 export { MySQLAdapter } from './MySQLAdapter';
+export { PostgreSQLAdapter } from './PostgreSQLAdapter';
 
 // Future exports (will be implemented in later tasks):
-// export { PostgreSQLAdapter } from './PostgreSQLAdapter';
 // export { createDatabaseAdapter } from './factory';
