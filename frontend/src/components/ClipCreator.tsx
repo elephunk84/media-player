@@ -4,7 +4,8 @@
  * Provides UI for creating clips from a video by capturing playback times.
  */
 
-import { useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import React, { useState } from 'react';
 import type { CreateClipInput } from '../types/video';
 import './ClipCreator.css';
 

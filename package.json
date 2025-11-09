@@ -7,12 +7,27 @@
     "prepare": "husky install",
     "lint": "npm run lint --prefix backend && npm run lint --prefix frontend",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
+    "e2e:setup": "bash ./e2e/seed/create-test-videos.sh",
+    "e2e:start": "docker-compose -f docker-compose.e2e.yml up -d",
+    "e2e:stop": "docker-compose -f docker-compose.e2e.yml down",
+    "e2e:logs": "docker-compose -f docker-compose.e2e.yml logs -f"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "husky": "^8.0.3"
   },
-  "keywords": ["media", "player", "video", "streaming"],
+  "keywords": [
+    "media",
+    "player",
+    "video",
+    "streaming"
+  ],
   "author": "",
   "license": "MIT"
 }

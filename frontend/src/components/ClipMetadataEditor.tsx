@@ -5,7 +5,8 @@
  * Supports adding, editing, and removing metadata fields.
  */
 
-import { useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import React, { useState } from 'react';
 import './ClipMetadataEditor.css';
 
 interface ClipMetadataEditorProps {

@@ -5,7 +5,8 @@
  * Provides custom controls, keyboard shortcuts, and responsive design.
  */
 
-import { useEffect, useRef } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import React, { useEffect, useRef } from 'react';
 import { useVideoPlayer, type UseVideoPlayerReturn } from '../hooks/useVideoPlayer';
 import 'video.js/dist/video-js.css';
 import './VideoPlayer.css';
@@ -184,6 +185,7 @@ export default function VideoPlayer({
         ref={videoElementRef}
         className="video-js vjs-big-play-centered vjs-theme-fantasy"
         playsInline
+        data-testid="video-player"
       />
 
       {/* Loading State */}
