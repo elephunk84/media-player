@@ -9,6 +9,4 @@ export { ClipService, type MetadataInheritanceConfig } from './ClipService';
 export { PlaylistService } from './PlaylistService';
 export { AuthService, type AuthServiceConfig } from './AuthService';
 export { FFmpegService } from './FFmpegService';
-
-// Future exports (will be implemented in later tasks):
-// export { VideoStreamingService } from './VideoStreamingService';
+export { VideoStreamingService, type StreamOptions } from './VideoStreamingService';
