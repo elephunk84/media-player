@@ -161,7 +161,7 @@
   - _Requirements: Req 1, Req 6_
   - _Prompt: Implement the task for spec media-player, first run spec-workflow-guide to get the workflow guide then implement the task: | Role: Backend Developer with expertise in video streaming and HTTP range requests | Task: Create VideoStreamingService with streamVideo and streamClip methods. streamVideo opens file stream and supports HTTP Range headers for seeking. streamClip uses FFmpeg to extract specific time range on-the-fly (use -ss startTime -to endTime). Create streamController with GET /api/stream/video/:id and GET /api/stream/clip/:id endpoints that use VideoStreamingService. Set appropriate headers (Content-Type: video/mp4, Accept-Ranges: bytes, Content-Length). Handle Range requests with 206 Partial Content response. Reference design.md sections: VideoStreamingService, API Design (Streaming), Video Streaming Approach | Restrictions: Must support Range headers for seeking, validate video/clip exists and is available, restrict file access to video mount path only, handle file read errors, set correct MIME types, stream efficiently (don't load entire file in memory) | _Leverage: VideoService from task 3.2, ClipService from task 3.3, authentication middleware from task 4.1 | Success: Video streaming supports seeking via Range headers, clip streaming plays correct time range, large files stream efficiently, appropriate headers are set, file access is restricted to allowed paths
 
-- [ ] 5.3. Implement HLS streaming support (optional enhancement)
+- [x] 5.3. Implement HLS streaming support (optional enhancement)
   - Files: backend/src/services/HLSService.ts, backend/src/routes/hls.ts (update stream.ts)
   - Generate HLS manifests and segments on-demand
   - Cache segments for performance
