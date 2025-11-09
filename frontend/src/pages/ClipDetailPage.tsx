@@ -4,13 +4,14 @@
  * Displays clip player with metadata editing (inherited vs custom metadata).
  */
 
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
 import VideoPlayer from '../components/VideoPlayer';
 import ClipMetadataEditor from '../components/ClipMetadataEditor';
 import { useApi } from '../hooks/useApi';
 import apiClient from '../services/apiClient';
 import type { Clip, Video } from '../types/video';
+import type { PlaylistClip } from '../types/playlist';
 import './ClipDetailPage.css';
 
 /**
@@ -40,11 +41,23 @@ function renderMetadataValue(value: unknown): string {
   return String(value);
 }
 
+interface PlaylistState {
+  playlistId: number;
+  playlistName: string;
+  clipIndex: number;
+  clips: PlaylistClip[];
+}
+
 export default function ClipDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
   const clipId = id ? parseInt(id, 10) : undefined;
   const [isSavingMetadata, setIsSavingMetadata] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Playlist context from navigation state
+  const playlistState = location.state as PlaylistState | undefined;
 
   // Fetch clip details
   const {
@@ -106,6 +119,37 @@ export default function ClipDetailPage() {
     [clipId, fetchClip]
   );
 
+  // Playlist navigation handlers
+  const handleNextClip = useCallback(() => {
+    if (!playlistState) return;
+
+    const nextIndex = playlistState.clipIndex + 1;
+    if (nextIndex < playlistState.clips.length) {
+      const nextClip = playlistState.clips[nextIndex];
+      navigate(`/clip/${nextClip.id}`, {
+        state: {
+          ...playlistState,
+          clipIndex: nextIndex,
+        },
+      });
+    }
+  }, [playlistState, navigate]);
+
+  const handlePreviousClip = useCallback(() => {
+    if (!playlistState) return;
+
+    const prevIndex = playlistState.clipIndex - 1;
+    if (prevIndex >= 0) {
+      const prevClip = playlistState.clips[prevIndex];
+      navigate(`/clip/${prevClip.id}`, {
+        state: {
+          ...playlistState,
+          clipIndex: prevIndex,
+        },
+      });
+    }
+  }, [playlistState, navigate]);
+
   // Validation
   if (!clipId || isNaN(clipId)) {
     return (
@@ -160,6 +204,47 @@ export default function ClipDetailPage() {
           <span className="breadcrumb-separator">/</span>
           <span>{clip.name}</span>
         </div>
+
+        {/* Playlist Navigation */}
+        {playlistState && (
+          <div className="playlist-navigation">
+            <div className="playlist-navigation__header">
+              <Link to={`/playlist/${playlistState.playlistId}`} className="playlist-name">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                {playlistState.playlistName}
+              </Link>
+              <span className="playlist-position">
+                Clip {playlistState.clipIndex + 1} of {playlistState.clips.length}
+              </span>
+            </div>
+            <div className="playlist-navigation__controls">
+              <button
+                onClick={handlePreviousClip}
+                disabled={playlistState.clipIndex === 0}
+                className="playlist-nav-button"
+                title="Previous clip"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                </svg>
+                <span>Previous</span>
+              </button>
+              <button
+                onClick={handleNextClip}
+                disabled={playlistState.clipIndex >= playlistState.clips.length - 1}
+                className="playlist-nav-button"
+                title="Next clip"
+              >
+                <span>Next</span>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Clip Title */}
         <h1 className="clip-detail-title">{clip.name}</h1>
