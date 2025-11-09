@@ -1,0 +1,120 @@
+.clip-marker-timeline {
+  margin-top: 1.5rem;
+}
+
+.clip-marker-timeline h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.clip-marker-container {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.clip-marker-track {
+  position: relative;
+  height: 40px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: visible;
+}
+
+.clip-marker {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: rgba(0, 123, 255, 0.7);
+  border: 2px solid #007bff;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.clip-marker:hover {
+  background: rgba(0, 123, 255, 0.9);
+  transform: translateY(-2px);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.clip-marker:focus {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+}
+
+.clip-marker-label {
+  font-size: 0.75rem;
+  color: white;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0 4px;
+}
+
+.clip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.clip-list-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.clip-list-item-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.clip-list-item-button:hover {
+  background: #f5f5f5;
+}
+
+.clip-list-item-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
+}
+
+.clip-list-item-name {
+  font-weight: 500;
+  color: #333;
+  font-size: 1rem;
+}
+
+.clip-list-item-time {
+  font-size: 0.875rem;
+  color: #666;
+  font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 600px) {
+  .clip-marker-label {
+    font-size: 0.7rem;
+  }
+
+  .clip-marker-track {
+    height: 30px;
+  }
+}

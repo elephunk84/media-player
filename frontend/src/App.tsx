@@ -1,20 +1,27 @@
-import { useState } from 'react';
+/**
+ * App Component
+ *
+ * Root component that sets up routing and authentication context for the application.
+ */
+
+import { AuthProvider } from './contexts/AuthContext';
+import AppRoutes from './routes';
 import './App.css';
 
+/**
+ * App Component
+ *
+ * Main application component that renders the route configuration.
+ * Wraps the application with AuthProvider for global authentication state.
+ * Uses React Router for navigation and route protection.
+ */
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Media Player</h1>
-        <p>Self-hosted video management and streaming application</p>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-          <p>Application is starting up...</p>
-        </div>
-      </header>
-    </div>
+    <AuthProvider>
+      <div className="app">
+        <AppRoutes />
+      </div>
+    </AuthProvider>
   );
 }
 

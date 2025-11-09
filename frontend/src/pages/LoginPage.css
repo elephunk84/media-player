@@ -1,0 +1,61 @@
+/**
+ * Login Page Styles
+ *
+ * Styles for the login page container and header.
+ * The actual form styles are in LoginForm.css.
+ */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.login-page__container {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.login-page__header {
+  text-align: center;
+}
+
+.login-page__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-page__subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  font-size: 1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-page {
+    padding: 1rem;
+  }
+
+  .login-page__title {
+    font-size: 2rem;
+  }
+
+  .login-page__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .login-page__container {
+    gap: 1.5rem;
+  }
+}
