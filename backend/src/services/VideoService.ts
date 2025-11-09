@@ -14,6 +14,7 @@ import {
   VideoSearchCriteria,
 } from '../models';
 import { FileScanner } from '../utils/FileScanner';
+import { FFmpegService } from './FFmpegService';
 import {
   ValidationError,
   validatePositiveInteger,
@@ -39,6 +40,7 @@ import {
 export class VideoService {
   private adapter: DatabaseAdapter;
   private fileScanner: FileScanner;
+  private ffmpegService: FFmpegService;
 
   /**
    * Create a new VideoService
@@ -48,6 +50,7 @@ export class VideoService {
   constructor(adapter: DatabaseAdapter) {
     this.adapter = adapter;
     this.fileScanner = new FileScanner();
+    this.ffmpegService = new FFmpegService();
   }
 
   /**
@@ -96,8 +99,8 @@ export class VideoService {
    * Scan videos directory and add new videos to the database
    *
    * Scans the specified directory for video files and adds them to the database.
-   * Uses placeholder metadata for now (duration=0, resolution="unknown").
-   * FFmpeg integration will be added later for extracting real metadata.
+   * Extracts real metadata using FFmpeg (duration, resolution, codec).
+   * Falls back to default values if FFmpeg is not available or extraction fails.
    *
    * @param mountPath - Path to the videos directory to scan
    * @returns Array of newly added videos
@@ -135,17 +138,39 @@ export class VideoService {
           continue;
         }
 
-        // Create video input with placeholder metadata
+        // Extract metadata using FFmpeg
+        console.info(`Extracting metadata for: ${file.relativePath}`);
+        const metadata = await this.ffmpegService.extractMetadataWithDefaults(
+          file.absolutePath,
+          file.fileSize
+        );
+
+        // Store optional metadata in customMetadata if available
+        const customMetadata: Record<string, unknown> = {};
+        if (metadata.frameRate !== undefined) {
+          customMetadata.frameRate = metadata.frameRate;
+        }
+        if (metadata.bitrate !== undefined) {
+          customMetadata.bitrate = metadata.bitrate;
+        }
+        if (metadata.audioCodec !== undefined) {
+          customMetadata.audioCodec = metadata.audioCodec;
+        }
+        if (metadata.format !== undefined) {
+          customMetadata.format = metadata.format;
+        }
+
+        // Create video input with extracted metadata
         const videoInput: CreateVideoInput = {
           filePath: file.relativePath,
           title: this.generateTitleFromPath(file.relativePath),
           description: null,
           tags: [],
-          duration: 0, // Placeholder - will be extracted with FFmpeg later
-          resolution: 'unknown', // Placeholder - will be extracted with FFmpeg later
-          codec: null,
-          fileSize: file.fileSize,
-          customMetadata: {},
+          duration: metadata.duration,
+          resolution: metadata.resolution,
+          codec: metadata.codec,
+          fileSize: metadata.fileSize,
+          customMetadata,
         };
 
         // Insert into database
@@ -172,12 +197,14 @@ export class VideoService {
           const insertedVideo = await this.getVideoById(result.insertId);
           if (insertedVideo) {
             newVideos.push(insertedVideo);
-            console.info(`Added video: ${videoInput.title} (ID: ${result.insertId})`);
+            console.info(
+              `Added video: ${videoInput.title} (ID: ${result.insertId}) - ${metadata.duration}s, ${metadata.resolution}, ${metadata.codec}`
+            );
           }
         }
       } catch (error) {
         console.error(`Error processing file ${file.relativePath}:`, error);
-        // Continue with next file
+        // Continue with next file - don't let one failure stop the scan
       }
     }
 
