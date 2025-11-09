@@ -1,19 +1,22 @@
-import { useState } from 'react';
+/**
+ * App Component
+ *
+ * Root component that sets up routing for the application.
+ */
+
+import AppRoutes from './routes';
 import './App.css';
 
+/**
+ * App Component
+ *
+ * Main application component that renders the route configuration.
+ * Uses React Router for navigation and route protection.
+ */
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Media Player</h1>
-        <p>Self-hosted video management and streaming application</p>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-          <p>Application is starting up...</p>
-        </div>
-      </header>
+    <div className="app">
+      <AppRoutes />
     </div>
   );
 }
