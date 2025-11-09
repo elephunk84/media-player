@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # MySQL Database for E2E Testing
+  mysql-test:
+    image: mysql:8
+    container_name: media-player-mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: testpassword
+      MYSQL_DATABASE: media_player_test
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./e2e/seed/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptestpassword"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - test-network
+    tmpfs:
+      - /var/lib/mysql  # Use tmpfs for faster tests
+
+  # Backend API for E2E Testing
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: media-player-backend-test
+    environment:
+      NODE_ENV: test
+      PORT: 3001
+      DB_TYPE: mysql
+      DB_HOST: mysql-test
+      DB_PORT: 3306
+      DB_NAME: media_player_test
+      DB_USER: testuser
+      DB_PASSWORD: testpassword
+      JWT_SECRET: test-secret-key-for-e2e-tests
+      VIDEO_MOUNT_PATH: /media
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./e2e/test-videos:/media:ro
+      - hls-cache-test:/app/cache
+    depends_on:
+      mysql-test:
+        condition: service_healthy
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Frontend for E2E Testing
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: media-player-frontend-test
+    environment:
+      VITE_API_URL: http://localhost:3001
+    ports:
+      - "80:80"
+    depends_on:
+      backend-test:
+        condition: service_healthy
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  hls-cache-test:
+    driver: local
+
+networks:
+  test-network:
+    driver: bridge
