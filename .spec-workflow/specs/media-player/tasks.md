@@ -271,7 +271,7 @@
   - _Requirements: All backend requirements_
   - _Prompt: Implement the task for spec media-player, first run spec-workflow-guide to get the workflow guide then implement the task: | Role: QA Engineer with expertise in unit testing and Jest framework | Task: Create unit tests for all service classes using Jest. Mock DatabaseAdapter to isolate service logic. Test VideoService (scan, CRUD, search), ClipService (create with validation, metadata isolation), PlaylistService (ordering, reordering), AuthService (password hashing, token generation). Cover success cases, validation failures, and error handling. Aim for 80%+ code coverage. Reference design.md sections: Testing Strategy (Unit Testing), all Service sections | Restrictions: Mock all dependencies (database, file system, FFmpeg), test behavior not implementation, use descriptive test names, test edge cases (empty results, invalid inputs), assert error messages | _Leverage: All service classes from Phase 3 | Success: All service methods have tests, mocking isolates unit logic, tests cover success and failure paths, code coverage >80%, tests run quickly and reliably, NOTE: After completing this task and logging it using log-implementation, edit tasks.md to mark task 9.1 as [x] completed
 
-- [ ] 9.2. Write backend integration tests for API endpoints
+- [x] 9.2. Write backend integration tests for API endpoints
   - Files: backend/tests/integration/api.test.ts
   - Test complete API flows with real database
   - Use Supertest for HTTP request testing
