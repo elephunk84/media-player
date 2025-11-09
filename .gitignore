@@ -15,6 +15,15 @@ build/
 .env
 .env.local
 .env.*.local
+.env.prod
+.env.production
+
+# Docker secrets (NEVER commit these!)
+secrets/*.txt
+secrets/db_*.txt
+secrets/jwt_*.txt
+!secrets/.gitkeep
+!secrets/README.md
 
 # IDE
 .vscode/
