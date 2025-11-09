@@ -6,6 +6,7 @@
  */
 
 import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,8 +18,8 @@ interface ProtectedRouteProps {
  * Checks if user is authenticated before rendering children.
  * If not authenticated, redirects to /login with return URL preserved.
  *
- * Authentication is currently checked via localStorage token.
- * This will be enhanced with AuthContext in a future task.
+ * Uses AuthContext to determine authentication state.
+ * Shows loading state while validating token on initial mount.
  *
  * @param props - Component props
  * @param props.children - Child components to render if authenticated
@@ -37,15 +38,27 @@ interface ProtectedRouteProps {
  */
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const location = useLocation();
+  const { isAuthenticated, loading } = useAuth();
 
-  // Check if user is authenticated
-  // For now, check localStorage token
-  // This will be replaced with AuthContext in task 6.2
-  const token = localStorage.getItem('token');
-  const isAuthenticated = !!token;
+  // Show loading state while validating token
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    // Redirect to login, preserving the intended destination
+    // Preserve the intended destination
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

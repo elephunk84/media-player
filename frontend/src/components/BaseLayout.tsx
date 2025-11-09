@@ -6,6 +6,7 @@
  */
 
 import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import './BaseLayout.css';
 
 /**
@@ -13,6 +14,7 @@ import './BaseLayout.css';
  *
  * Wraps all protected pages with a common navigation header and layout structure.
  * Uses React Router's Outlet to render child routes.
+ * Uses AuthContext for logout functionality.
  *
  * @example
  * ```tsx
@@ -23,10 +25,11 @@ import './BaseLayout.css';
  */
 export default function BaseLayout() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    // Clear authentication (will be implemented in AuthContext later)
-    localStorage.removeItem('token');
+    // Clear authentication using AuthContext
+    logout();
     navigate('/login');
   };
 
