@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { useVideoPlayer } from '../hooks/useVideoPlayer';
+import { useVideoPlayer, type UseVideoPlayerReturn } from '../hooks/useVideoPlayer';
 import 'video.js/dist/video-js.css';
 import './VideoPlayer.css';
 
@@ -16,6 +16,7 @@ interface VideoPlayerProps {
   autoplay?: boolean;
   controls?: boolean;
   className?: string;
+  playerInstance?: UseVideoPlayerReturn;
 }
 
 /**
@@ -38,11 +39,15 @@ interface VideoPlayerProps {
  * @param props.autoplay - Whether to autoplay video (default: false)
  * @param props.controls - Whether to show controls (default: true)
  * @param props.className - Additional CSS classes
+ * @param props.playerInstance - Optional player instance from useVideoPlayer hook for external control
  *
  * @example
  * ```tsx
  * <VideoPlayer videoId={123} autoplay={false} />
  * <VideoPlayer clipId={456} />
+ * // With external player control
+ * const player = useVideoPlayer();
+ * <VideoPlayer videoId={123} playerInstance={player} />
  * ```
  */
 export default function VideoPlayer({
@@ -51,9 +56,11 @@ export default function VideoPlayer({
   autoplay = false,
   controls = true,
   className = '',
+  playerInstance,
 }: VideoPlayerProps) {
   const videoElementRef = useRef<HTMLVideoElement>(null);
-  const player = useVideoPlayer();
+  const internalPlayer = useVideoPlayer();
+  const player = playerInstance || internalPlayer;
 
   // Determine streaming URL based on videoId or clipId
   const streamUrl = videoId

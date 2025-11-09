@@ -52,3 +52,40 @@ export interface VideoFilters {
   limit?: number;
   offset?: number;
 }
+
+/**
+ * Clip model representing a time-based segment from a video
+ */
+export interface Clip {
+  id: number;
+  videoId: number;
+  name: string;
+  description: string | null;
+  startTime: number;
+  endTime: number;
+  duration: number;
+  inheritedMetadata: Record<string, unknown>;
+  customMetadata: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Clip creation input (fields required to create a new clip)
+ */
+export interface CreateClipInput {
+  videoId: number;
+  name: string;
+  description?: string | null;
+  startTime: number;
+  endTime: number;
+  inheritedMetadata?: Record<string, unknown>;
+  customMetadata?: Record<string, unknown>;
+}
+
+/**
+ * Response from GET /api/clips
+ */
+export interface ClipsResponse {
+  clips: Clip[];
+}
