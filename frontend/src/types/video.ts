@@ -88,4 +88,18 @@ export interface CreateClipInput {
  */
 export interface ClipsResponse {
   clips: Clip[];
+  count: number;
+}
+
+/**
+ * Clip with populated source video information
+ */
+export interface ClipWithVideo extends Clip {
+  video?: {
+    id: number;
+    title: string;
+    filePath: string;
+    duration: number;
+    isAvailable: boolean;
+  };
 }

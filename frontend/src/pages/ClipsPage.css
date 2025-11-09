@@ -1,0 +1,179 @@
+.clips-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.clips-header {
+  margin-bottom: 2rem;
+}
+
+.clips-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  color: #333;
+}
+
+.clips-header p {
+  margin: 0;
+  color: #666;
+}
+
+.clips-filter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 250px;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+}
+
+.filter-group select {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.filter-group select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clips-count {
+  font-weight: 600;
+  color: #007bff;
+  white-space: nowrap;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+}
+
+.clips-loading,
+.clips-error,
+.clips-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.clips-loading .spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.clips-error {
+  color: #c33;
+}
+
+.clips-empty {
+  color: #666;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.clips-empty h2 {
+  margin: 0 0 0.5rem 0;
+  color: #999;
+}
+
+.clips-empty p {
+  margin: 0;
+}
+
+.clips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .clips-page {
+    padding: 1rem;
+  }
+
+  .clips-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .clips-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .clips-grid {
+    grid-template-columns: 1fr;
+  }
+}

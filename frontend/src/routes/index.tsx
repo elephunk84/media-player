@@ -11,6 +11,7 @@ import LoginPage from '../pages/LoginPage';
 import VideosPage from '../pages/VideosPage';
 import VideoDetailPage from '../pages/VideoDetailPage';
 import ClipsPage from '../pages/ClipsPage';
+import ClipDetailPage from '../pages/ClipDetailPage';
 import PlaylistsPage from '../pages/PlaylistsPage';
 import PlaylistDetailPage from '../pages/PlaylistDetailPage';
 
@@ -26,6 +27,7 @@ import PlaylistDetailPage from '../pages/PlaylistDetailPage';
  * - /videos - Protected videos library page
  * - /video/:id - Protected video detail page
  * - /clips - Protected clips library page
+ * - /clip/:id - Protected clip playback page
  * - /playlists - Protected playlists page
  * - /playlist/:id - Protected playlist detail/editor page
  */
@@ -53,6 +55,7 @@ export default function AppRoutes() {
 
         {/* Clips routes */}
         <Route path="clips" element={<ClipsPage />} />
+        <Route path="clip/:id" element={<ClipDetailPage />} />
 
         {/* Playlists routes */}
         <Route path="playlists" element={<PlaylistsPage />} />
