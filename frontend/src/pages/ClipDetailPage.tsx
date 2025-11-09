@@ -1,12 +1,13 @@
 /**
  * Clip Detail Page
  *
- * Displays clip player with metadata and source video information.
+ * Displays clip player with metadata editing (inherited vs custom metadata).
  */
 
 import { useParams, Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import VideoPlayer from '../components/VideoPlayer';
+import ClipMetadataEditor from '../components/ClipMetadataEditor';
 import { useApi } from '../hooks/useApi';
 import apiClient from '../services/apiClient';
 import type { Clip, Video } from '../types/video';
@@ -26,9 +27,24 @@ function formatTime(seconds: number): string {
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }
 
+/**
+ * Render metadata value (handles arrays, objects, primitives)
+ */
+function renderMetadataValue(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value.join(', ');
+  }
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value);
+  }
+  return String(value);
+}
+
 export default function ClipDetailPage() {
   const { id } = useParams<{ id: string }>();
   const clipId = id ? parseInt(id, 10) : undefined;
+  const [isSavingMetadata, setIsSavingMetadata] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Fetch clip details
   const {
@@ -59,6 +75,36 @@ export default function ClipDetailPage() {
       void fetchVideo();
     }
   }, [clip?.videoId, fetchVideo]);
+
+  // Handle save custom metadata
+  const handleSaveMetadata = useCallback(
+    async (customMetadata: Record<string, unknown>) => {
+      if (!clipId) {
+        return;
+      }
+
+      setIsSavingMetadata(true);
+      setSaveSuccess(false);
+
+      try {
+        await apiClient.patch(`/api/clips/${clipId}/metadata`, {
+          customMetadata,
+        });
+
+        // Reload clip to get updated data
+        await fetchClip();
+
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      } catch (error) {
+        console.error('Failed to save metadata:', error);
+        alert('Failed to save metadata. Please try again.');
+      } finally {
+        setIsSavingMetadata(false);
+      }
+    },
+    [clipId, fetchClip]
+  );
 
   // Validation
   if (!clipId || isNaN(clipId)) {
@@ -103,6 +149,7 @@ export default function ClipDetailPage() {
   }
 
   const isOrphaned = videoError || !video || !video.isAvailable;
+  const hasInheritedMetadata = Object.keys(clip.inheritedMetadata).length > 0;
 
   return (
     <div className="page clip-detail-page">
@@ -116,6 +163,9 @@ export default function ClipDetailPage() {
 
         {/* Clip Title */}
         <h1 className="clip-detail-title">{clip.name}</h1>
+
+        {/* Success Message */}
+        {saveSuccess && <div className="save-success-message">✓ Metadata saved successfully!</div>}
 
         {/* Video Player */}
         <div className="clip-detail-player">
@@ -169,6 +219,35 @@ export default function ClipDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Inherited Metadata (Read-Only) */}
+        {hasInheritedMetadata && (
+          <div className="inherited-metadata">
+            <div className="metadata-section-header">
+              <h2>Inherited Metadata</h2>
+              <span className="metadata-badge read-only-badge">Read-Only</span>
+            </div>
+            <p className="metadata-section-description">
+              Metadata inherited from the source video. These values are read-only and cannot be
+              edited.
+            </p>
+            <div className="metadata-list inherited">
+              {Object.entries(clip.inheritedMetadata).map(([key, value]) => (
+                <div key={key} className="metadata-list-item">
+                  <span className="metadata-list-key">{key}:</span>
+                  <span className="metadata-list-value">{renderMetadataValue(value)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Custom Metadata (Editable) */}
+        <ClipMetadataEditor
+          customMetadata={clip.customMetadata}
+          onSave={handleSaveMetadata}
+          isSaving={isSavingMetadata}
+        />
 
         {/* Actions */}
         <div className="clip-detail-actions">

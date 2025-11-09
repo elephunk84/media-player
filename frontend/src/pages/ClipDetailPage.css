@@ -34,6 +34,27 @@
   color: #333;
 }
 
+.save-success-message {
+  padding: 1rem;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  color: #155724;
+  font-weight: 500;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .clip-detail-player {
   width: 100%;
 }
@@ -165,6 +186,78 @@
 .metadata-value {
   color: #333;
   font-size: 1rem;
+}
+
+/* Inherited Metadata Section */
+.inherited-metadata {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.metadata-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.metadata-section-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #555;
+}
+
+.metadata-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.read-only-badge {
+  background: #6c757d;
+  color: white;
+}
+
+.metadata-section-description {
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+}
+
+.metadata-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metadata-list.inherited {
+  opacity: 0.8;
+}
+
+.metadata-list-item {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+
+.metadata-list-key {
+  font-weight: 600;
+  color: #666;
+  min-width: 150px;
+}
+
+.metadata-list-value {
+  color: #555;
+  word-break: break-word;
 }
 
 .clip-detail-actions {
