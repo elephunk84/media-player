@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/rich-metadata-import/tasks.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-10T14:55:51.272Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762786551270_kx6p4dg9f",
+      "approvalTitle": "Tasks Document - Rich Metadata Import"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-10T14:55:56.232Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762786551270_kx6p4dg9f",
+      "approvalTitle": "Tasks Document - Rich Metadata Import"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/rich-metadata-import/design.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-10T14:51:51.073Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762786311070_39hmlzpcu",
+      "approvalTitle": "Design Document - Rich Metadata Import"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-10T14:52:58.946Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762786311070_39hmlzpcu",
+      "approvalTitle": "Design Document - Rich Metadata Import"
+    }
+  ]
+}
