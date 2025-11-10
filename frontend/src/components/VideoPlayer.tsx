@@ -8,6 +8,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { useEffect, useRef } from 'react';
 import { useVideoPlayer, type UseVideoPlayerReturn } from '../hooks/useVideoPlayer';
+import { MetronomeOverlay } from './MetronomeOverlay';
 import 'video.js/dist/video-js.css';
 import './VideoPlayer.css';
 
@@ -18,6 +19,7 @@ interface VideoPlayerProps {
   controls?: boolean;
   className?: string;
   playerInstance?: UseVideoPlayerReturn;
+  metronomeEnabled?: boolean;
 }
 
 /**
@@ -58,6 +60,7 @@ export default function VideoPlayer({
   controls = true,
   className = '',
   playerInstance,
+  metronomeEnabled = true,
 }: VideoPlayerProps) {
   const videoElementRef = useRef<HTMLVideoElement>(null);
   const internalPlayer = useVideoPlayer();
@@ -215,9 +218,12 @@ export default function VideoPlayer({
         </div>
       )}
 
+      {/* Metronome Overlay */}
+      {metronomeEnabled && <MetronomeOverlay playerState={player} />}
+
       {/* Keyboard Shortcuts Help (optional, can be toggled) */}
       <div className="video-player__shortcuts-hint">
-        Press <kbd>?</kbd> for keyboard shortcuts
+        Press <kbd>?</kbd> for keyboard shortcuts | Press <kbd>Ctrl+M</kbd> for metronome
       </div>
     </div>
   );
