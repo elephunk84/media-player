@@ -11,3 +11,8 @@ export { AuthService, type AuthServiceConfig } from './AuthService';
 export { FFmpegService } from './FFmpegService';
 export { VideoStreamingService, type StreamOptions } from './VideoStreamingService';
 export { HLSService } from './HLSService';
+export {
+  MediaLoaderService,
+  type MediaLoaderOptions,
+  type LoaderStatistics,
+} from './MediaLoaderService';
