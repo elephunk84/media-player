@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/metronome-overlay/design.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-10T09:33:36.514Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762767216511_cms28v2f1",
+      "approvalTitle": "Design Document - Metronome Overlay Feature"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-10T09:44:06.898Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762767216511_cms28v2f1",
+      "approvalTitle": "Design Document - Metronome Overlay Feature"
+    }
+  ]
+}

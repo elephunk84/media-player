@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/metronome-overlay/tasks.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-10T09:50:49.794Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762768249791_ecuwh6hmo",
+      "approvalTitle": "Tasks Document - Metronome Overlay Implementation Guide"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-10T09:51:05.704Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762768249791_ecuwh6hmo",
+      "approvalTitle": "Tasks Document - Metronome Overlay Implementation Guide"
+    }
+  ]
+}
