@@ -62,6 +62,26 @@ Media Player is a comprehensive, self-hosted solution for managing and streaming
 - **FFmpeg Integration**: Automatic transcoding and format conversion
 - **Video.js Player**: Professional video player with full controls
 
+### 🎵 Metronome Overlay
+
+- **Beat Synchronization**: Visual and audio metronome synced to video playback
+- **BPM Range**: 30-300 beats per minute with real-time adjustment
+- **Visual Effects**: Flash, pulse, and border effects with customizable colors
+- **Beat Patterns**: Create complex rhythmic patterns (2-32 beats)
+- **Audio Library**: Built-in sounds (click, beep, drum, snap, woodblock) + custom upload
+- **Advanced Features**: Tempo changes, randomization, accent beats, and presets
+- **Use Cases**: Music practice, dance training, interval workouts, video editing timing
+
+### 📂 Media Metadata Loader
+
+- **UUID-Based Import**: Automatically discover and import video files with UUID filenames
+- **Metadata Matching**: Links videos with JSON metadata files
+- **Batch Processing**: Process thousands of files efficiently with transaction safety
+- **Idempotent**: Safe to re-run without duplicating data
+- **CLI Tool**: Command-line interface with dry-run mode and progress tracking
+- **Flexible Paths**: Configurable video and metadata directory paths
+- **Statistics**: Detailed import statistics and error reporting
+
 ### 🔐 Security
 
 - **JWT Authentication**: Secure token-based authentication
@@ -247,6 +267,8 @@ npm run test:e2e
 ### For Users
 
 - **[User Guide](USER_GUIDE.md)** - Complete feature documentation
+- **[Metronome Guide](docs/METRONOME.md)** - Metronome overlay feature guide
+- **[Media Loader Guide](docs/MEDIA_LOADER.md)** - Media metadata loader documentation
 - **[Deployment Guide](DEPLOYMENT.md)** - Step-by-step deployment
 - **[Production Guide](PRODUCTION.md)** - Production best practices
 
