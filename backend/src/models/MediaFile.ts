@@ -121,6 +121,61 @@ export interface MediaFile {
    */
   metadataFilePath: string | null;
 
+  // ==================== Rich Metadata Fields ====================
+
+  /**
+   * Human-readable title for display
+   * Extracted from display_name > title > filename fallback chain
+   */
+  displayName: string | null;
+
+  /**
+   * Source provider (e.g., "pornhub", "youtube")
+   */
+  provider: string | null;
+
+  /**
+   * Provider's video ID (e.g., "ph5952b413d0f8e")
+   */
+  providerId: string | null;
+
+  /**
+   * Original webpage URL
+   */
+  webpageUrl: string | null;
+
+  /**
+   * Thumbnail image URL
+   */
+  thumbnail: string | null;
+
+  /**
+   * Video duration in seconds
+   */
+  duration: number | null;
+
+  /**
+   * Format that was downloaded (e.g., "720p", "hls-2054")
+   */
+  downloadedFormat: string | null;
+
+  /**
+   * Array of available formats (stored as JSON/JSONB)
+   */
+  availableFormats: string[] | null;
+
+  /**
+   * Video creator/uploader name
+   */
+  creator: string | null;
+
+  /**
+   * Foreign key to tags table (primary/main category)
+   */
+  primaryTagId: number | null;
+
+  // ==================== Timestamps ====================
+
   /**
    * Timestamp when the record was first created in the database
    */
@@ -235,6 +290,18 @@ export interface MediaFileRow {
   file_extension: string | null;
   metadata: string | Record<string, unknown> | null; // JSON string or parsed object
   metadata_file_path: string | null;
+  // Rich metadata fields
+  display_name: string | null;
+  provider: string | null;
+  provider_id: string | null;
+  webpage_url: string | null;
+  thumbnail: string | null;
+  duration: number | null;
+  downloaded_format: string | null;
+  available_formats: string | string[] | null; // JSON string or parsed array
+  creator: string | null;
+  primary_tag_id: number | null;
+  // Timestamps
   created_at: Date;
   updated_at: Date;
   last_scanned_at: Date;
