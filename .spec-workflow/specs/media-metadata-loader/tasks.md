@@ -177,7 +177,7 @@
 
 ## Phase 6: Documentation & Finalization
 
-- [ ] 6.1. Add JSDoc documentation to all public APIs
+- [x] 6.1. Add JSDoc documentation to all public APIs
   - Files: All service, model, and utility files
   - Add comprehensive JSDoc comments
   - Document parameters, return types, and examples
@@ -186,7 +186,7 @@
   - _Requirements: All requirements_
   - _Prompt: Implement the task for spec media-metadata-loader, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Technical Writer specializing in API documentation | Task: Add or enhance JSDoc comments for all public methods and interfaces across media loader components. For each class: add class-level JSDoc with @example. For each public method: add method JSDoc with @param for parameters (with types and descriptions), @returns for return value (with type and description), @throws for errors, @example showing usage. For each interface: add interface JSDoc and field descriptions. Follow existing JSDoc patterns from VideoService.ts and other services. Ensure examples are realistic and helpful. Include edge cases in documentation where relevant. | Restrictions: Do not modify code functionality, follow JSDoc syntax exactly, maintain consistency with existing documentation style, don't document private methods extensively | Leverage: Follow JSDoc patterns from VideoService.ts and FileScanner.ts, use existing documentation as templates | Success: All public APIs have comprehensive JSDoc, examples are clear and functional, documentation is consistent, TypeScript compiler recognizes all doc comments. After completion, use log-implementation tool to record this task, then mark task as completed in tasks.md._
 
-- [ ] 6.2. Create README documentation for media loader
+- [x] 6.2. Create README documentation for media loader
   - File: `backend/src/cli/README.md`
   - Document CLI usage, options, and examples
   - Add troubleshooting section
@@ -195,7 +195,7 @@
   - _Requirements: REQ-10, all requirements_
   - _Prompt: Implement the task for spec media-metadata-loader, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Technical Writer specializing in user documentation | Task: Create comprehensive README.md in backend/src/cli/ directory documenting the media loader. Include sections: (1) Overview - what the loader does, (2) Prerequisites - required environment setup, (3) Installation - how to set up, (4) Configuration - environment variables needed (DB config, VIDEO_PATH, METADATA_PATH), (5) Usage - command syntax and examples for development and production, (6) CLI Options - detailed description of all flags with examples, (7) Directory Structure - expected structure of /mnt/Videos and /mnt/Metadata, (8) Output - explanation of statistics and what they mean, (9) Examples - multiple real-world usage examples (first run, re-run, dry-run, verbose mode), (10) Troubleshooting - common issues and solutions (directory not found, permission errors, database errors, malformed metadata), (11) Idempotency - explain safe re-running behavior. Use markdown formatting with code blocks and clear headings. | Restrictions: Keep documentation clear and concise, provide realistic examples, don't duplicate information from main README, focus on CLI-specific usage | Leverage: Follow structure from main project README.md, reference existing documentation style | Success: Documentation is comprehensive and easy to follow, examples work as shown, troubleshooting covers common issues, formatting is clean. After completion, use log-implementation tool to record this task, then mark task as completed in tasks.md._
 
-- [ ] 6.3. Update main README with media loader information
+- [x] 6.3. Update main README with media loader information
   - File: `README.md` (modify existing)
   - Add section about media metadata loader feature
   - Update project features list

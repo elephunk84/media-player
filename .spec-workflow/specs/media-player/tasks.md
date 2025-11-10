@@ -279,7 +279,7 @@
   - _Requirements: All backend requirements_
   - _Prompt: Implement the task for spec media-player, first run spec-workflow-guide to get the workflow guide then implement the task: | Role: QA Engineer with expertise in integration testing and API testing | Task: Create integration tests using Jest and Supertest. Start a test database container (MySQL or PostgreSQL) before tests. Test complete API flows: login -> create video -> create clip -> add to playlist. Test authentication (401 without token), validation (400 for invalid data), not found (404), success scenarios (200, 201). Clean up database between tests. Reference design.md sections: Testing Strategy (Integration Testing), API Design | Restrictions: Use real database (not mocked), test HTTP layer (not service layer directly), clean up data between tests, test authentication on protected routes, verify response structure and status codes | _Leverage: All API endpoints from Phase 4, Supertest library | Success: Integration tests cover main user flows, database is properly set up and cleaned, authentication is tested, all status codes are verified, tests can run in CI/CD, NOTE: After completing this task and logging it using log-implementation, edit tasks.md to mark task 9.2 as [x] completed
 
-- [ ] 9.3. Write frontend component tests
+- [x] 9.3. Write frontend component tests
   - Files: frontend/tests/components/VideoPlayer.test.tsx, frontend/tests/components/ClipCreator.test.tsx, frontend/tests/components/PlaylistEditor.test.tsx
   - Test component rendering and user interactions
   - Mock API calls
@@ -287,7 +287,7 @@
   - _Requirements: All frontend requirements_
   - _Prompt: Implement the task for spec media-player, first run spec-workflow-guide to get the workflow guide then implement the task: | Role: Frontend QA Engineer with expertise in React Testing Library and component testing | Task: Create component tests using React Testing Library and Jest. Test VideoPlayer (renders, responds to controls), ClipCreator (sets start/end, creates clip), PlaylistEditor (reorders, adds/removes clips). Mock API calls with jest.mock. Test user interactions (clicks, typing, drag-and-drop). Verify components render correct data and handle loading/error states. Reference design.md sections: Testing Strategy (Unit Testing), Frontend Components | Restrictions: Mock all API calls (don't call real backend), test user behavior not implementation details, use accessible queries (getByRole, getByLabelText), test error and loading states, cleanup after each test | _Leverage: All frontend components from Phases 6-8, React Testing Library | Success: Key components have tests, user interactions are tested, API mocking works correctly, loading and error states verified, tests follow best practices (accessible queries), NOTE: After completing this task and logging it using log-implementation, edit tasks.md to mark task 9.3 as [x] completed
 
-- [ ] 9.4. Write end-to-end tests for critical user flows
+- [x] 9.4. Write end-to-end tests for critical user flows
   - Files: e2e/tests/videoWorkflow.spec.ts, e2e/tests/playlistWorkflow.spec.ts
   - Test complete user journeys from login to playback
   - Use Playwright or Cypress
@@ -296,7 +296,7 @@
 
 ## Phase 10: Deployment and Documentation
 
-- [ ] 10.1. Create production Docker images and compose file
+- [x] 10.1. Create production Docker images and compose file
   - Files: docker-compose.prod.yml, backend/Dockerfile.prod, frontend/Dockerfile.prod
   - Optimize Docker images for production (multi-stage builds)
   - Configure production environment variables
