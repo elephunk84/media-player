@@ -7,6 +7,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "load-media": "ts-node src/cli/loadMedia.ts",
+    "load-media:prod": "node dist/cli/loadMedia.js",
     "test": "jest --testPathIgnorePatterns=integration",
     "test:unit": "jest --testPathIgnorePatterns=integration",
     "test:integration": "jest --testPathPattern=integration --runInBand",

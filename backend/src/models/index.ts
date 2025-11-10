@@ -45,6 +45,16 @@ export {
 // Migration models
 export { Migration, MigrationRow } from './Migration';
 
+// Media file models (UUID-based)
+export {
+  MediaFile,
+  MediaFileData,
+  MetadataFile,
+  CreateMediaFileInput,
+  UpdateMediaFileInput,
+  MediaFileRow,
+} from './MediaFile';
+
 // Search and filter types
 export {
   FilterOperator,

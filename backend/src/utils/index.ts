@@ -11,6 +11,10 @@ export {
   type FileScannerOptions,
 } from './FileScanner';
 
+export { UUIDExtractor } from './UUIDExtractor';
+
+export { MetadataReader } from './MetadataReader';
+
 export {
   ValidationError,
   validatePositiveInteger,
