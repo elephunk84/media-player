@@ -1,0 +1,148 @@
+/**
+ * MetronomeControls styles
+ */
+
+.metronome-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.metronome-controls__toggle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metronome-controls__toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.metronome-controls__toggle--active {
+  color: #4caf50;
+}
+
+.metronome-controls__toggle--active:hover {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.metronome-icon {
+  pointer-events: none;
+}
+
+.metronome-controls__pulse-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.metronome-controls__bpm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metronome-controls__bpm-label {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 32px;
+}
+
+.metronome-controls__bpm-slider {
+  width: 150px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  appearance: none;
+}
+
+.metronome-controls__bpm-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #4caf50;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.metronome-controls__bpm-slider::-webkit-slider-thumb:hover {
+  background: #45a049;
+}
+
+.metronome-controls__bpm-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #4caf50;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.metronome-controls__bpm-slider::-moz-range-thumb:hover {
+  background: #45a049;
+}
+
+.metronome-controls__bpm-value {
+  min-width: 40px;
+  text-align: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.metronome-controls__settings {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.metronome-controls__settings:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.metronome-controls__settings svg {
+  pointer-events: none;
+}

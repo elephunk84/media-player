@@ -1,0 +1,35 @@
+/**
+ * FlashEffect styles
+ *
+ * Full-screen flash overlay with fade-out animation
+ */
+
+.flash-effect {
+  /* Positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* Appearance */
+  background-color: var(--flash-color);
+  opacity: 0;
+
+  /* Prevent interaction */
+  pointer-events: none;
+
+  /* Layer above content but below controls */
+  z-index: 9999;
+
+  /* Smooth fade-out transition */
+  transition: opacity var(--flash-duration) ease-out;
+}
+
+.flash-effect--active {
+  /* Full opacity when active */
+  opacity: var(--flash-opacity);
+
+  /* No transition on initial appearance (instant on) */
+  transition: none;
+}

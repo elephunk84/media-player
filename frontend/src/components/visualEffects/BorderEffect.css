@@ -1,0 +1,40 @@
+/**
+ * BorderEffect styles
+ *
+ * Full-screen border that shrinks and fades
+ */
+
+.border-effect {
+  /* Positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* Border */
+  border: var(--border-thickness) solid var(--border-color);
+  opacity: var(--border-opacity);
+
+  /* Prevent interaction */
+  pointer-events: none;
+
+  /* Layer above content */
+  z-index: 9999;
+
+  /* Prevent layout shifts */
+  box-sizing: border-box;
+
+  /* Smooth fade and shrink */
+  transition:
+    opacity var(--border-duration) ease-out,
+    border-width var(--border-duration) ease-out;
+}
+
+.border-effect--active {
+  /* Fade to transparent */
+  opacity: 0;
+
+  /* Shrink to zero width */
+  border-width: 0;
+}

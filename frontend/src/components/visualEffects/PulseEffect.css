@@ -1,0 +1,76 @@
+/**
+ * PulseEffect styles
+ *
+ * Expanding pulse animation with multiple shape variants
+ */
+
+.pulse-effect {
+  /* Positioning */
+  position: fixed;
+
+  /* Initial size (will be overridden) */
+  width: 10vh;
+  height: 10vh;
+
+  /* Appearance */
+  background-color: var(--pulse-color);
+  opacity: var(--pulse-opacity);
+
+  /* Prevent interaction */
+  pointer-events: none;
+
+  /* Layer above content */
+  z-index: 9999;
+
+  /* Start small and centered */
+  transform: translate(-50%, -50%) scale(0.1);
+
+  /* Smooth expansion and fade */
+  transition:
+    transform var(--pulse-duration) ease-out,
+    opacity var(--pulse-duration) ease-out;
+}
+
+.pulse-effect--active {
+  /* Expand to full size */
+  transform: translate(-50%, -50%) scale(1);
+
+  /* Fade to transparent */
+  opacity: 0;
+}
+
+/* Shape variants */
+
+.pulse-effect--circle {
+  border-radius: 50%;
+}
+
+.pulse-effect--square {
+  border-radius: 0;
+}
+
+.pulse-effect--diamond {
+  /* Start rotated and small */
+  transform: translate(-50%, -50%) rotate(45deg) scale(0.1);
+}
+
+.pulse-effect--diamond.pulse-effect--active {
+  /* Expand while maintaining rotation */
+  transform: translate(-50%, -50%) rotate(45deg) scale(1);
+}
+
+.pulse-effect--star {
+  /* Star shape using clip-path */
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
