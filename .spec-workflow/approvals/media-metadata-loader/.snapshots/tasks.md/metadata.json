@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/media-metadata-loader/tasks.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-10T11:02:09.407Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762772529405_ceis1lwmo",
+      "approvalTitle": "Tasks Document - Media Metadata Loader"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-10T11:02:17.908Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762772529405_ceis1lwmo",
+      "approvalTitle": "Tasks Document - Media Metadata Loader"
+    }
+  ]
+}

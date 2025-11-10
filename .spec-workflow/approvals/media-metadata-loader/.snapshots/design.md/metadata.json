@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/media-metadata-loader/design.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-10T10:58:08.223Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762772288221_rq7jzqh78",
+      "approvalTitle": "Design Document - Media Metadata Loader"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-10T10:58:14.705Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762772288221_rq7jzqh78",
+      "approvalTitle": "Design Document - Media Metadata Loader"
+    }
+  ]
+}
