@@ -69,7 +69,7 @@ export default function PlaylistDetailPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await apiClient.get(`/api/playlists/${id}`);
+      const response = await apiClient.get<PlaylistWithClips>(`/api/playlists/${id}`);
       setPlaylist(response.data);
       setEditName(response.data.name);
       setEditDescription(response.data.description || '');
@@ -234,7 +234,7 @@ export default function PlaylistDetailPage() {
       <div className="playlist-detail-page__header">
         {isEditing ? (
           /* Edit Form */
-          <form onSubmit={handleUpdatePlaylist} className="playlist-detail-page__edit-form">
+          <form onSubmit={(e) => void handleUpdatePlaylist(e)} className="playlist-detail-page__edit-form">
             <div className="playlist-detail-page__form-group">
               <label htmlFor="playlist-name">Name</label>
               <input
@@ -298,7 +298,7 @@ export default function PlaylistDetailPage() {
                 <span>Edit</span>
               </button>
               <button
-                onClick={handleDeletePlaylist}
+                onClick={() => void handleDeletePlaylist()}
                 className="playlist-detail-page__delete-button"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -60,8 +60,9 @@ export default function ClipSelector({
       try {
         setLoading(true);
         setError(null);
-        const response = await apiClient.get('/api/clips');
-        setClips(response.data.clips || response.data);
+        const response = await apiClient.get<{ clips?: ClipWithVideo[] } | ClipWithVideo[]>('/api/clips');
+        const data = response.data;
+        setClips(Array.isArray(data) ? data : (data.clips || []));
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Failed to fetch clips';
         setError(message);
@@ -182,7 +183,7 @@ export default function ClipSelector({
                       </div>
                     </div>
                     <button
-                      onClick={() => handleAddClip(clip.id)}
+                      onClick={() => void handleAddClip(clip.id)}
                       disabled={isAdding || isOrphaned}
                       className="clip-selector-item__add"
                       title={isOrphaned ? 'Cannot add orphaned clip' : 'Add to playlist'}

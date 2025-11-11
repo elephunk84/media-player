@@ -45,7 +45,7 @@ export default function PlaylistsPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await apiClient.get('/api/playlists');
+      const response = await apiClient.get<Playlist[]>('/api/playlists');
       setPlaylists(response.data);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to load playlists';
@@ -175,7 +175,7 @@ export default function PlaylistsPage() {
                   <PlaylistCard
                     key={playlist.id}
                     playlist={playlist}
-                    onDelete={handleDeletePlaylist}
+                    onDelete={(id) => void handleDeletePlaylist(id)}
                   />
                 ))}
               </div>

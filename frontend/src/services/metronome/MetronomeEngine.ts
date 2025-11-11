@@ -41,7 +41,7 @@ export class MetronomeEngine {
    */
   constructor() {
     // Initialize AudioContext (handle webkit prefix for Safari)
-    const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+    const AudioContextClass = (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext);
 
     if (!AudioContextClass) {
       throw new Error('Web Audio API not supported in this browser');
@@ -49,8 +49,9 @@ export class MetronomeEngine {
 
     try {
       this.audioContext = new AudioContextClass();
-    } catch (error) {
-      throw new Error(`Failed to initialize AudioContext: ${error}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to initialize AudioContext: ${message}`);
     }
   }
 
@@ -67,7 +68,7 @@ export class MetronomeEngine {
 
     // Resume AudioContext if suspended (browser security requirement)
     if (this.audioContext.state === 'suspended') {
-      this.audioContext.resume();
+      void this.audioContext.resume();
     }
 
     this.config = config;
@@ -104,7 +105,9 @@ export class MetronomeEngine {
    * Beat position is maintained for resume
    */
   pause(): void {
-    if (!this.running) return;
+    if (!this.running) {
+      return;
+    }
 
     this.paused = true;
     this.pausedTime = this.audioContext!.currentTime;
@@ -121,7 +124,9 @@ export class MetronomeEngine {
    * Adjusts timing to account for pause duration
    */
   resume(): void {
-    if (!this.paused || !this.audioContext) return;
+    if (!this.paused || !this.audioContext) {
+      return;
+    }
 
     this.paused = false;
 
@@ -226,7 +231,7 @@ export class MetronomeEngine {
     this.beatListeners = [];
 
     if (this.audioContext) {
-      this.audioContext.close();
+      void this.audioContext.close();
       this.audioContext = null;
     }
   }

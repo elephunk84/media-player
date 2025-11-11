@@ -48,9 +48,10 @@ export async function loadAudioBuffer(
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
     return audioBuffer;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error loading audio buffer:', error);
-    throw new Error(`Audio loading failed: ${error.message || 'Unknown error'}`);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Audio loading failed: ${message}`);
   }
 }
 
@@ -100,9 +101,10 @@ export async function loadCustomAudioFile(
     });
 
     return { buffer, dataUrl };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error loading custom audio file:', error);
-    throw new Error(`Failed to load custom audio file: ${error.message || 'Unknown error'}`);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to load custom audio file: ${message}`);
   }
 }
 
@@ -200,7 +202,7 @@ export function getBuiltInSoundUrl(soundType: SoundType): string {
  * @returns True if Web Audio API is available
  */
 export function isWebAudioSupported(): boolean {
-  return !!(window.AudioContext || (window as any).webkitAudioContext);
+  return !!(window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext);
 }
 
 /**

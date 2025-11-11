@@ -53,7 +53,7 @@ export function useMetronomeAudio(
   // Initialize AudioContext and AudioScheduler
   useEffect(() => {
     try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass = window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!AudioContextClass) {
         throw new Error('Web Audio API not supported');
       }
@@ -69,26 +69,32 @@ export function useMetronomeAudio(
           setLoadingSound(false);
           setAudioError(null);
         })
-        .catch(err => {
+        .catch((err: unknown) => {
           setLoadingSound(false);
-          setAudioError(`Failed to load sound: ${err.message}`);
+          const message = err instanceof Error ? err.message : 'Unknown error';
+          setAudioError(`Failed to load sound: ${message}`);
         });
-    } catch (err: any) {
-      setAudioError(err.message || 'Failed to initialize audio');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to initialize audio';
+      setAudioError(message);
     }
 
     return () => {
       audioSchedulerRef.current?.dispose();
-      audioContextRef.current?.close();
+      void audioContextRef.current?.close();
     };
   }, []);
 
   // Subscribe to beat events and play sounds
   useEffect(() => {
-    if (!engineRef.current || !audioSchedulerRef.current) return;
+    if (!engineRef.current || !audioSchedulerRef.current) {
+      return;
+    }
 
     const handleBeat = (beatInfo: BeatInfo) => {
-      if (audioConfig.muted) return;
+      if (audioConfig.muted) {
+        return;
+      }
 
       // Get volume for this intensity
       const volume = patternManagerRef.current.getIntensityVolume(
@@ -129,9 +135,10 @@ export function useMetronomeAudio(
           setLoadingSound(false);
           setAudioError(null);
         })
-        .catch(err => {
+        .catch((err: unknown) => {
           setLoadingSound(false);
-          setAudioError(`Failed to load sound: ${err.message}`);
+          const message = err instanceof Error ? err.message : 'Unknown error';
+          setAudioError(`Failed to load sound: ${message}`);
         });
     }
   }, [audioConfig.soundType]);
@@ -158,9 +165,10 @@ export function useMetronomeAudio(
       await audioSchedulerRef.current.loadCustomSound(file);
       setLoadingSound(false);
       setAudioError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setLoadingSound(false);
-      setAudioError(err.message);
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setAudioError(message);
       throw err;
     }
   };

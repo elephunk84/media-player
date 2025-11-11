@@ -54,10 +54,10 @@ export function useMetronomePresets(): UseMetronomePresetsReturn {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
+        const parsed: unknown = JSON.parse(stored);
         setPresets(Array.isArray(parsed) ? parsed : []);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load presets:', err);
       setError('Failed to load presets from storage');
     }
@@ -68,8 +68,8 @@ export function useMetronomePresets(): UseMetronomePresetsReturn {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
       setError(null);
-    } catch (err: any) {
-      if (err.name === 'QuotaExceededError') {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'QuotaExceededError') {
         setError('Storage quota exceeded. Delete unused presets.');
       } else {
         setError('Failed to save presets');
@@ -119,7 +119,7 @@ export function useMetronomePresets(): UseMetronomePresetsReturn {
 
   const importPresets = useCallback((json: string): { success: boolean; error?: string } => {
     try {
-      const parsed = JSON.parse(json);
+      const parsed: unknown = JSON.parse(json);
 
       if (!Array.isArray(parsed)) {
         return { success: false, error: 'Invalid format: expected array' };
@@ -127,7 +127,14 @@ export function useMetronomePresets(): UseMetronomePresetsReturn {
 
       // Validate structure
       const valid = parsed.every(
-        p => p.id && p.name && p.config && p.createdAt && p.updatedAt
+        (p: unknown): p is MetronomePreset =>
+          typeof p === 'object' &&
+          p !== null &&
+          'id' in p &&
+          'name' in p &&
+          'config' in p &&
+          'createdAt' in p &&
+          'updatedAt' in p
       );
 
       if (!valid) {
@@ -137,7 +144,7 @@ export function useMetronomePresets(): UseMetronomePresetsReturn {
       setPresets(parsed);
       setError(null);
       return { success: true };
-    } catch (err) {
+    } catch (err: unknown) {
       return { success: false, error: 'Failed to parse JSON' };
     }
   }, []);
