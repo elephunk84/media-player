@@ -58,5 +58,5 @@ module.exports = {
     'eqeqeq': ['error', 'always'],
     'curly': ['error', 'all'],
   },
-  ignorePatterns: ['dist', 'node_modules', '*.cjs', 'vite.config.ts'],
+  ignorePatterns: ['dist', 'node_modules', '*.cjs', 'vite.config.ts', '**/__tests__/**', '**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
 };
