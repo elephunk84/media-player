@@ -80,12 +80,14 @@ export function BorderEffect({ intensity, duration, config, onComplete }: Border
   return (
     <div
       className={`border-effect ${active ? 'border-effect--active' : ''}`}
-      style={{
-        ['--border-color' as any]: config.color,
-        ['--border-opacity' as any]: finalOpacity,
-        ['--border-thickness' as any]: `${finalThickness}px`,
-        ['--border-duration' as any]: `${duration}ms`,
-      }}
+      style={
+        {
+          '--border-color': config.color,
+          '--border-opacity': finalOpacity,
+          '--border-thickness': `${finalThickness}px`,
+          '--border-duration': `${duration}ms`,
+        } as React.CSSProperties
+      }
     />
   );
 }

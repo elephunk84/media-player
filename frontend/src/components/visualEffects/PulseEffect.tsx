@@ -83,14 +83,16 @@ export function PulseEffect({ intensity, duration, config, onComplete }: PulseEf
   return (
     <div
       className={`pulse-effect pulse-effect--${config.shape} ${active ? 'pulse-effect--active' : ''}`}
-      style={{
-        ['--pulse-color' as any]: config.color,
-        ['--pulse-opacity' as any]: finalOpacity,
-        ['--pulse-size' as any]: `${finalSize}vh`,
-        ['--pulse-duration' as any]: `${duration}ms`,
-        left: `${config.position.x}%`,
-        top: `${config.position.y}%`,
-      }}
+      style={
+        {
+          '--pulse-color': config.color,
+          '--pulse-opacity': finalOpacity,
+          '--pulse-size': `${finalSize}vh`,
+          '--pulse-duration': `${duration}ms`,
+          left: `${config.position.x}%`,
+          top: `${config.position.y}%`,
+        } as React.CSSProperties
+      }
     />
   );
 }

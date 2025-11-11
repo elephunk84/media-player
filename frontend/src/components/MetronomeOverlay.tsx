@@ -50,12 +50,13 @@ export function MetronomeOverlay({ playerState, initialConfig }: MetronomeOverla
   );
   const presets = useMetronomePresets();
 
-  // Apply initial config if provided
+  // Apply initial config if provided (only on mount)
   React.useEffect(() => {
     if (initialConfig) {
       metronome.updateConfig(initialConfig);
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount, intentionally ignoring initialConfig and metronome
 
   // Handle keyboard shortcuts
   React.useEffect(() => {

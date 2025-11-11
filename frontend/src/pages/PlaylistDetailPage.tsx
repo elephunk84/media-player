@@ -5,7 +5,7 @@
  * Allows reordering clips, adding/removing clips, and sequential playback.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../services/apiClient';
 import { PlaylistWithClips, UpdatePlaylistData } from '../types/playlist';
@@ -65,7 +65,7 @@ export default function PlaylistDetailPage() {
   /**
    * Fetch playlist with clips
    */
-  const fetchPlaylist = async () => {
+  const fetchPlaylist = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -80,12 +80,12 @@ export default function PlaylistDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   // Fetch playlist on component mount
   useEffect(() => {
     void fetchPlaylist();
-  }, [id]);
+  }, [fetchPlaylist]);
 
   /**
    * Handle updating playlist metadata

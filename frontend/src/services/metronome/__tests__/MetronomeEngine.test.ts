@@ -246,7 +246,7 @@ describe('MetronomeEngine', () => {
 
       // Next beat time should be adjusted
       const testableEngine = engine as MetronomeEngineTestable;
-      const nextBeatTime: number = testableEngine.nextBeatTime;
+      const nextBeatTime = testableEngine.nextBeatTime as number;
       expect(nextBeatTime).toBeGreaterThan(pauseTime);
     });
   });
@@ -361,10 +361,12 @@ describe('MetronomeEngine', () => {
     test('updateBPM() changes BPM in real-time', () => {
       engine.start(config);
       const testableEngine = engine as MetronomeEngineTestable;
-      expect(testableEngine.config!.bpm).toBe(60);
+      const engineConfig = testableEngine.config as MetronomeConfig;
+      expect(engineConfig.bpm).toBe(60);
 
       engine.updateBPM(120);
-      expect(testableEngine.config!.bpm).toBe(120);
+      const updatedConfig = testableEngine.config as MetronomeConfig;
+      expect(updatedConfig.bpm).toBe(120);
     });
 
     test('updateBPM() does nothing if not started', () => {
@@ -397,7 +399,8 @@ describe('MetronomeEngine', () => {
 
       engine.updatePattern(newPattern);
       const testableEngine = engine as MetronomeEngineTestable;
-      expect(testableEngine.config!.pattern).toEqual(newPattern);
+      const engineConfig = testableEngine.config as MetronomeConfig;
+      expect(engineConfig.pattern).toEqual(newPattern);
     });
 
     test('updatePattern() wraps beat position if pattern is shorter', () => {

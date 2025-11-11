@@ -72,11 +72,13 @@ export function FlashEffect({ intensity, duration, config, onComplete }: FlashEf
   return (
     <div
       className={`flash-effect ${active ? 'flash-effect--active' : ''}`}
-      style={{
-        ['--flash-color' as any]: config.color,
-        ['--flash-opacity' as any]: finalOpacity,
-        ['--flash-duration' as any]: `${duration}ms`,
-      }}
+      style={
+        {
+          '--flash-color': config.color,
+          '--flash-opacity': finalOpacity,
+          '--flash-duration': `${duration}ms`,
+        } as React.CSSProperties
+      }
     />
   );
 }

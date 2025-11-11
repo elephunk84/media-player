@@ -83,7 +83,7 @@ export function useMetronomeAudio(
       audioSchedulerRef.current?.dispose();
       void audioContextRef.current?.close();
     };
-  }, []);
+  }, [audioConfig.soundType]);
 
   // Subscribe to beat events and play sounds
   useEffect(() => {
@@ -111,10 +111,11 @@ export function useMetronomeAudio(
       );
     };
 
-    engineRef.current.on('beat', handleBeat);
+    const engine = engineRef.current;
+    engine.on('beat', handleBeat);
 
     return () => {
-      engineRef.current?.off('beat', handleBeat);
+      engine?.off('beat', handleBeat);
     };
   }, [engineRef, audioConfig]);
 

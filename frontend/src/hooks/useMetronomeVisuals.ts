@@ -66,10 +66,11 @@ export function useMetronomeVisuals(
       }, effectDuration);
     };
 
-    engineRef.current.on('beat', handleBeat);
+    const engine = engineRef.current;
+    engine.on('beat', handleBeat);
 
     return () => {
-      engineRef.current?.off('beat', handleBeat);
+      engine?.off('beat', handleBeat);
     };
   }, [engineRef, visualConfig, bpm]);
 
