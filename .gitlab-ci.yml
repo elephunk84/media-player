@@ -1,0 +1,157 @@
+# GitLab CI/CD Pipeline for Media Player Application
+# Builds and publishes Docker images to GitLab Container Registry
+
+variables:
+  # Docker image names in GitLab Container Registry
+  BACKEND_IMAGE: ${CI_REGISTRY_IMAGE}/backend
+  FRONTEND_IMAGE: ${CI_REGISTRY_IMAGE}/frontend
+
+  # Docker build arguments
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+  # Image tag strategy: use git tag, branch name, or commit SHA
+  IMAGE_TAG: ${CI_COMMIT_TAG:-${CI_COMMIT_REF_SLUG}}
+
+  MAIN_BRANCH: "main"
+  DEVELOPMENT_BRANCH: "development"
+
+include:
+
+  - project: "ci/components/utils"
+    ref: "main"
+    file:
+      - ".gitlab-ci.semantic-release.yml"
+      - ".gitlab-ci.check-source-changes.yml"
+      - ".gitlab-ci.cleanup-pipelines.yml"
+      - ".gitlab-ci.cleanup-tags.yml"
+      - ".gitlab-ci.telegram-notify.yml"
+      - ".gitlab-ci.docker-build.yml"
+      - ".gitlab-ci.python-build.yml"
+
+
+stages:
+  - version
+  - test
+  - docker
+
+# Cache configuration to speed up builds
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - backend/node_modules/
+    - frontend/node_modules/
+
+semantic_release:
+  stage: version
+  extends: .semantic_release
+  needs:
+    - job: check_source_files
+      artifacts: true
+  artifacts:
+    paths:
+      - version.env
+    expire_in: 1 week
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $MAIN_BRANCH'
+
+# Test stage - Run unit tests before building
+test:backend:
+  stage: test
+  image: node:20-alpine
+  before_script:
+    - cd backend
+    - npm ci --quiet
+  script:
+    - npm run lint
+    - npm run test:unit
+  only:
+    - merge_requests
+    - main
+    - develop
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-backend
+    paths:
+      - backend/node_modules/
+
+test:frontend:
+  stage: test
+  image: node:20-alpine
+  before_script:
+    - cd frontend
+    - npm ci --quiet
+  script:
+    - npm run lint
+    - npm run test
+  only:
+    - merge_requests
+    - main
+    - develop
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-frontend
+    paths:
+      - frontend/node_modules/
+
+docker_build:backend:
+  stage: docker
+  extends: .docker_build
+  variables:
+    CONTEXT: "backend"
+    DOCKERFILE: "Dockerfile.prod"
+    IMAGE: "${CI_REGISTRY_IMAGE}"
+    TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
+  needs:
+    - job: build_python
+
+docker_build:frontend:
+  stage: docker
+  extends: .docker_build
+  variables:
+    CONTEXT: "frontend"
+    DOCKERFILE: "Dockerfile"
+    IMAGE: "${CI_REGISTRY_IMAGE}"
+    TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
+  needs:
+    - job: build_python
+
+telegram:on_success:
+  stage: .post
+  extends: .telegram_notify
+  variables:
+    TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
+    TELEGRAM_CHAT_ID: "${TELEGRAM_CHAT_ID}"
+  rules:
+    # Don't notify for fix stage commits (those with [ci skip])
+    - if: '$CI_COMMIT_MESSAGE =~ /\[ci skip\]/'
+      when: never
+    # Don't run if RUN_STAGE is set to fix only
+    - if: '$RUN_STAGE == "fix"'
+      when: never
+    - if: '$RUN_STAGE == "cleanup"'
+      when: never
+    # Don't notify for cleanup-only pipelines
+    - if: '$CI_COMMIT_MESSAGE =~ /cleanup failed pipelines/i'
+      when: never
+    # Run on success
+    - when: on_success
+
+telegram:on_failure:
+  stage: .post
+  extends: .telegram_notify
+  variables:
+    TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
+    TELEGRAM_CHAT_ID: "${TELEGRAM_CHAT_ID}"
+  rules:
+    # Don't notify for fix stage commits (those with [ci skip])
+    - if: '$CI_COMMIT_MESSAGE =~ /\[ci skip\]/'
+      when: never
+    # Don't run if RUN_STAGE is set to fix only
+    - if: '$RUN_STAGE == "fix"'
+      when: never
+    - if: '$RUN_STAGE == "cleanup"'
+      when: never
+    # Don't notify for cleanup-only pipelines
+    - if: '$CI_COMMIT_MESSAGE =~ /cleanup failed pipelines/i'
+      when: never
+    # Run on failure
+    - when: on_failure
