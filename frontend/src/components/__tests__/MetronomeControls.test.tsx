@@ -69,7 +69,7 @@ describe('MetronomeControls', () => {
     test('shows active state when enabled', () => {
       render(<MetronomeControls {...defaultProps} enabled={true} />);
 
-      const toggleButton = screen.getByRole('button', { name: /metronome/i });
+      const toggleButton = screen.getByRole('button', { name: /disable metronome/i });
       expect(toggleButton).toHaveAttribute('aria-pressed', 'true');
       expect(toggleButton).toHaveClass('metronome-controls__toggle--active');
     });

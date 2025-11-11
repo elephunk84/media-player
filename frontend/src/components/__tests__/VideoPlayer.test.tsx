@@ -52,6 +52,68 @@ jest.mock('../../hooks/useVideoPlayer', () => ({
   })),
 }));
 
+// Mock useMetronome hook
+jest.mock('../../hooks/useMetronome', () => ({
+  useMetronome: jest.fn(() => ({
+    enabled: false,
+    currentBeat: 0,
+    isRunning: false,
+    config: {
+      bpm: 60,
+      enabled: false,
+      pattern: { beats: ['strong', 'light', 'light', 'light'], length: 4, accentBeat: 1 },
+      patternEnabled: true,
+      randomization: 0,
+      randomizationEnabled: false,
+      tempoChange: {
+        mode: 'accelerate',
+        minBPM: 60,
+        maxBPM: 120,
+        durationMinutes: 5,
+      },
+      tempoChangeEnabled: false,
+      audio: {
+        volumeVariation: true,
+        volumeMap: { silent: 0, light: 0.3, medium: 0.6, strong: 1.0 },
+      },
+      visual: {
+        visualStyle: 'none',
+      },
+    },
+    toggle: jest.fn(),
+    start: jest.fn(),
+    stop: jest.fn(),
+    updateConfig: jest.fn(),
+    engineRef: { current: null },
+  })),
+}));
+
+// Mock useMetronomeAudio hook
+jest.mock('../../hooks/useMetronomeAudio', () => ({
+  useMetronomeAudio: jest.fn(() => ({
+    audioError: null,
+  })),
+}));
+
+// Mock useMetronomeVisuals hook
+jest.mock('../../hooks/useMetronomeVisuals', () => ({
+  useMetronomeVisuals: jest.fn(() => ({
+    activeEffect: null,
+  })),
+}));
+
+// Mock useMetronomePresets hook
+jest.mock('../../hooks/useMetronomePresets', () => ({
+  useMetronomePresets: jest.fn(() => ({
+    presets: [],
+    selectedPreset: null,
+    error: null,
+    loadPreset: jest.fn(),
+    savePreset: jest.fn(),
+    deletePreset: jest.fn(),
+  })),
+}));
+
 describe('VideoPlayer Component', () => {
   afterEach(() => {
     jest.clearAllMocks();

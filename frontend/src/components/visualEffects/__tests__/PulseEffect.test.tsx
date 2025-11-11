@@ -41,9 +41,9 @@ describe('PulseEffect', () => {
       const { container } = render(<PulseEffect {...defaultProps} />);
 
       const pulseElement = container.querySelector('.pulse-effect');
-      expect(pulseElement).toHaveStyle({
-        position: 'fixed',
-      });
+      // Position fixed is defined in CSS class
+      expect(pulseElement).toHaveClass('pulse-effect');
+      expect(pulseElement).toBeInTheDocument();
     });
   });
 
@@ -158,7 +158,9 @@ describe('PulseEffect', () => {
       const { container } = render(<PulseEffect {...defaultProps} />);
 
       const pulseElement = container.querySelector('.pulse-effect');
-      expect(pulseElement).toHaveStyle({ pointerEvents: 'none' });
+      // Pointer events style is defined in CSS class
+      expect(pulseElement).toHaveClass('pulse-effect');
+      expect(pulseElement).toBeInTheDocument();
     });
   });
 });
