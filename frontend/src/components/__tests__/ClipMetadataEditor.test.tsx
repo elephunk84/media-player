@@ -79,7 +79,8 @@ describe('ClipMetadataEditor Component', () => {
 
       await user.click(screen.getByRole('button', { name: /add field/i }));
 
-      expect(screen.getByPlaceholderText(/key/i)).toBeInTheDocument();
+      // Use findBy queries which automatically wait and handle act()
+      expect(await screen.findByPlaceholderText(/key/i)).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/value/i)).toBeInTheDocument();
     });
 
@@ -91,8 +92,10 @@ describe('ClipMetadataEditor Component', () => {
       await user.click(screen.getByRole('button', { name: /add field/i }));
       await user.click(screen.getByRole('button', { name: /add field/i }));
 
-      const keyInputs = screen.getAllByPlaceholderText(/key/i);
-      expect(keyInputs).toHaveLength(3);
+      await waitFor(() => {
+        const keyInputs = screen.getAllByPlaceholderText(/key/i);
+        expect(keyInputs).toHaveLength(3);
+      });
     });
 
     it('should show reset button after adding entry', async () => {
@@ -101,7 +104,8 @@ describe('ClipMetadataEditor Component', () => {
 
       await user.click(screen.getByRole('button', { name: /add field/i }));
 
-      expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+      // Use findBy to wait for the button to appear
+      expect(await screen.findByRole('button', { name: /reset/i })).toBeInTheDocument();
     });
   });
 
@@ -115,7 +119,9 @@ describe('ClipMetadataEditor Component', () => {
       const keyInput = screen.getByPlaceholderText(/key/i);
       await user.type(keyInput, 'myKey');
 
-      expect(keyInput).toHaveValue('myKey');
+      await waitFor(() => {
+        expect(keyInput).toHaveValue('myKey');
+      });
     });
 
     it('should update value when user types', async () => {
@@ -127,7 +133,9 @@ describe('ClipMetadataEditor Component', () => {
       const valueInput = screen.getByPlaceholderText(/value/i);
       await user.type(valueInput, 'myValue');
 
-      expect(valueInput).toHaveValue('myValue');
+      await waitFor(() => {
+        expect(valueInput).toHaveValue('myValue');
+      });
     });
 
     it('should allow editing existing metadata', async () => {
@@ -139,7 +147,9 @@ describe('ClipMetadataEditor Component', () => {
       await user.clear(valueInput);
       await user.type(valueInput, 'updated');
 
-      expect(valueInput).toHaveValue('updated');
+      await waitFor(() => {
+        expect(valueInput).toHaveValue('updated');
+      });
     });
 
     it('should show reset button when editing existing entry', async () => {
@@ -150,7 +160,9 @@ describe('ClipMetadataEditor Component', () => {
       const valueInput = screen.getByDisplayValue('test');
       await user.type(valueInput, ' updated');
 
-      expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+      });
     });
   });
 
@@ -162,12 +174,16 @@ describe('ClipMetadataEditor Component', () => {
       await user.click(screen.getByRole('button', { name: /add field/i }));
       await user.click(screen.getByRole('button', { name: /add field/i }));
 
-      expect(screen.getAllByPlaceholderText(/key/i)).toHaveLength(2);
+      await waitFor(() => {
+        expect(screen.getAllByPlaceholderText(/key/i)).toHaveLength(2);
+      });
 
       const removeButtons = screen.getAllByRole('button', { name: '✕' });
       await user.click(removeButtons[0]);
 
-      expect(screen.getAllByPlaceholderText(/key/i)).toHaveLength(1);
+      await waitFor(() => {
+        expect(screen.getAllByPlaceholderText(/key/i)).toHaveLength(1);
+      });
     });
 
     it('should remove all entries when all remove buttons clicked', async () => {
@@ -181,7 +197,9 @@ describe('ClipMetadataEditor Component', () => {
       await user.click(removeButtons[0]);
       await user.click(removeButtons[0]); // Index shifts after first removal
 
-      expect(screen.getByText(/no custom metadata/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/no custom metadata/i)).toBeInTheDocument();
+      });
     });
 
     it('should clear errors when removing entry', async () => {
@@ -195,13 +213,17 @@ describe('ClipMetadataEditor Component', () => {
       await user.clear(valueInput);
 
       // Error should appear
-      expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      });
 
       // Remove entry
       await user.click(screen.getByRole('button', { name: '✕' }));
 
       // Error should be gone
-      expect(screen.queryByText(/value cannot be empty/i)).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByText(/value cannot be empty/i)).not.toBeInTheDocument();
+      });
     });
   });
 
@@ -216,7 +238,9 @@ describe('ClipMetadataEditor Component', () => {
       await user.type(valueInput, 'test');
       await user.clear(valueInput);
 
-      expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      });
     });
 
     it('should clear error when valid value entered', async () => {
@@ -229,7 +253,9 @@ describe('ClipMetadataEditor Component', () => {
       await user.type(valueInput, 'a');
       await user.clear(valueInput);
 
-      expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      });
 
       await user.type(valueInput, 'valid');
 
@@ -249,8 +275,10 @@ describe('ClipMetadataEditor Component', () => {
 
       await user.click(screen.getByRole('button', { name: /save metadata/i }));
 
-      expect(screen.getByText(/key cannot be empty/i)).toBeInTheDocument();
-      expect(mockOnSave).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.getByText(/key cannot be empty/i)).toBeInTheDocument();
+        expect(mockOnSave).not.toHaveBeenCalled();
+      });
     });
 
     it('should alert on duplicate keys', async () => {
@@ -274,8 +302,10 @@ describe('ClipMetadataEditor Component', () => {
 
       await user.click(screen.getByRole('button', { name: /save metadata/i }));
 
-      expect(alertSpy).toHaveBeenCalledWith('Duplicate keys found: duplicate');
-      expect(mockOnSave).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(alertSpy).toHaveBeenCalledWith('Duplicate keys found: duplicate');
+        expect(mockOnSave).not.toHaveBeenCalled();
+      });
 
       alertSpy.mockRestore();
     });
@@ -376,7 +406,9 @@ describe('ClipMetadataEditor Component', () => {
       await user.type(keyInput, 'test');
       await user.type(valueInput, 'value');
 
-      expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+      });
 
       await user.click(screen.getByRole('button', { name: /save metadata/i }));
 
@@ -396,7 +428,9 @@ describe('ClipMetadataEditor Component', () => {
       await user.clear(valueInput);
       await user.type(valueInput, 'modified');
 
-      expect(valueInput).toHaveValue('modified');
+      await waitFor(() => {
+        expect(valueInput).toHaveValue('modified');
+      });
 
       await user.click(screen.getByRole('button', { name: /reset/i }));
 
@@ -413,7 +447,9 @@ describe('ClipMetadataEditor Component', () => {
       const valueInput = screen.getByDisplayValue('value');
       await user.clear(valueInput);
 
-      expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/value cannot be empty/i)).toBeInTheDocument();
+      });
 
       await user.click(screen.getByRole('button', { name: /reset/i }));
 
@@ -427,7 +463,10 @@ describe('ClipMetadataEditor Component', () => {
       render(<ClipMetadataEditor {...defaultProps} />);
 
       await user.click(screen.getByRole('button', { name: /add field/i }));
-      expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+      });
 
       await user.click(screen.getByRole('button', { name: /reset/i }));
 

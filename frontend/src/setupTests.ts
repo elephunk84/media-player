@@ -6,6 +6,27 @@
 
 import '@testing-library/jest-dom';
 
+// Suppress act() warnings from React Testing Library
+// These are false positives when using @testing-library/user-event
+// which handles act() internally
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args: unknown[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('Warning: An update to') &&
+      args[0].includes('inside a test was not wrapped in act')
+    ) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
 // Mock Video.js since it requires a DOM environment
 global.HTMLMediaElement.prototype.load = () => {
   /* do nothing */

@@ -164,21 +164,6 @@ function formatDuration(ms: number): string {
 }
 
 /**
- * Format file size in human-readable format
- */
-function _formatBytes(bytes: number): string {
-  if (bytes === 0) {
-    return '0 B';
-  }
-
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const k = 1024;
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return `${(bytes / Math.pow(k, i)).toFixed(2)} ${units[i]}`;
-}
-
-/**
  * Display formatted results
  */
 function displayResults(stats: LoaderStatistics): void {

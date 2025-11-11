@@ -23,9 +23,9 @@ export const TEST_DB_CONFIG: DatabaseConfig = {
 };
 
 /**
- * Test database type (mysql or postgres)
+ * Test database type (mysql or postgresql)
  */
-export const TEST_DB_TYPE = (process.env.TEST_DB_TYPE || 'mysql') as 'mysql' | 'postgres';
+export const TEST_DB_TYPE = (process.env.TEST_DB_TYPE || 'mysql') as 'mysql' | 'postgresql';
 
 /**
  * Global test database adapter
@@ -40,7 +40,7 @@ let testAdapter: DatabaseAdapter | null = null;
 export async function setupTestDatabase(): Promise<DatabaseAdapter> {
   // Create adapter if not already created
   if (!testAdapter) {
-    testAdapter = createDatabaseAdapter(TEST_DB_TYPE, TEST_DB_CONFIG);
+    testAdapter = createDatabaseAdapter(TEST_DB_TYPE);
     await testAdapter.connect(TEST_DB_CONFIG);
 
     // Run migrations to set up schema
