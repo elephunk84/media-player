@@ -106,15 +106,17 @@ export function applyTempoChange(
   let newBPM = currentBPM;
 
   switch (config.mode) {
-    case 'accelerate':
+    case 'accelerate': {
       newBPM = currentBPM + config.changePerMinute * elapsedMinutes;
       break;
+    }
 
-    case 'decelerate':
+    case 'decelerate': {
       newBPM = currentBPM - config.changePerMinute * elapsedMinutes;
       break;
+    }
 
-    case 'cycle':
+    case 'cycle': {
       // Oscillate between min and max BPM
       // Complete cycle every 2 minutes
       const range = config.maxBPM - config.minBPM;
@@ -122,6 +124,7 @@ export function applyTempoChange(
       const phase = (cycles % 1) * Math.PI * 2;
       newBPM = config.minBPM + (range / 2) * (1 + Math.sin(phase));
       break;
+    }
   }
 
   // Clamp to configured bounds

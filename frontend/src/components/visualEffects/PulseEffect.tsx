@@ -5,7 +5,7 @@
  * Supports multiple shapes (circle, square, diamond, star).
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './PulseEffect.css';
 
 /**

@@ -102,7 +102,7 @@ export default function CreatePlaylistModal({ onClose, onCreate }: CreatePlaylis
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-form">
+        <form onSubmit={(e) => void handleSubmit(e)} className="modal-form">
           <div className="form-group">
             <label htmlFor="playlist-name">
               Name <span className="required">*</span>

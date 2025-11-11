@@ -5,7 +5,7 @@
  * and then shrinks and fades out.
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './BorderEffect.css';
 
 /**

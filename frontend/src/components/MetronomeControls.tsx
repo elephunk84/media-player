@@ -4,7 +4,6 @@
  * Provides toggle button, BPM slider, and settings access.
  */
 
-import React from 'react';
 import './MetronomeControls.css';
 
 /**

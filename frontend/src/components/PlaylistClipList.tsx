@@ -213,12 +213,12 @@ export default function PlaylistClipList({
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
+      onDragEnd={(event) => void handleDragEnd(event)}
     >
       <SortableContext items={localClips.map((c) => c.id)} strategy={verticalListSortingStrategy}>
         <div className="playlist-clip-list">
           {localClips.map((clip) => (
-            <SortableClipItem key={clip.id} clip={clip} onRemove={handleRemove} />
+            <SortableClipItem key={clip.id} clip={clip} onRemove={(clipId) => void handleRemove(clipId)} />
           ))}
         </div>
       </SortableContext>

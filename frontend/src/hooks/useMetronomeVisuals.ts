@@ -36,9 +36,15 @@ export function useMetronomeVisuals(
 
   // Subscribe to beat events
   useEffect(() => {
-    if (!engineRef.current) return;
-    if (visualConfig.visualStyle === 'none') return;
-    if ('enabled' in visualConfig && !visualConfig.enabled) return;
+    if (!engineRef.current) {
+      return;
+    }
+    if (visualConfig.visualStyle === 'none') {
+      return;
+    }
+    if ('enabled' in visualConfig && !visualConfig.enabled) {
+      return;
+    }
 
     const handleBeat = (beatInfo: BeatInfo) => {
       // Calculate effect duration (80% of beat duration)

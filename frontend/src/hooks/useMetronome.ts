@@ -131,7 +131,9 @@ export function useMetronome(playerState: UseVideoPlayerReturn): UseMetronomeRet
 
   // Subscribe to beat events
   useEffect(() => {
-    if (!engineRef.current) return;
+    if (!engineRef.current) {
+      return;
+    }
 
     const handleBeat = (beatInfo: BeatInfo) => {
       setCurrentBeat(beatInfo.beatNumber);
@@ -146,7 +148,9 @@ export function useMetronome(playerState: UseVideoPlayerReturn): UseMetronomeRet
 
   // Sync with video player play/pause
   useEffect(() => {
-    if (!config.syncToVideo || !engineRef.current || !enabled) return;
+    if (!config.syncToVideo || !engineRef.current || !enabled) {
+      return;
+    }
 
     const engine = engineRef.current;
 
@@ -171,7 +175,9 @@ export function useMetronome(playerState: UseVideoPlayerReturn): UseMetronomeRet
 
   // Sync with video seek
   useEffect(() => {
-    if (!config.syncToVideo || !engineRef.current || !enabled) return;
+    if (!config.syncToVideo || !engineRef.current || !enabled) {
+      return;
+    }
 
     // Calculate which beat should be playing at current video time
     // This provides synchronization on video seek
@@ -205,7 +211,9 @@ export function useMetronome(playerState: UseVideoPlayerReturn): UseMetronomeRet
 
   // Start metronome
   const start = useCallback(() => {
-    if (!engineRef.current) return;
+    if (!engineRef.current) {
+      return;
+    }
 
     try {
       engineRef.current.start(config);
@@ -218,7 +226,9 @@ export function useMetronome(playerState: UseVideoPlayerReturn): UseMetronomeRet
 
   // Stop metronome
   const stop = useCallback(() => {
-    if (!engineRef.current) return;
+    if (!engineRef.current) {
+      return;
+    }
 
     engineRef.current.stop();
     setEnabled(false);

@@ -5,7 +5,6 @@
  * Uses discriminated union pattern for type-safe rendering.
  */
 
-import React from 'react';
 import { FlashEffect } from './visualEffects/FlashEffect';
 import { PulseEffect } from './visualEffects/PulseEffect';
 import { BorderEffect } from './visualEffects/BorderEffect';
@@ -53,9 +52,11 @@ export function VisualEffectRenderer({ effect, config }: VisualEffectRendererPro
 
   // Render based on visual style (discriminated union)
   switch (config.visualStyle) {
-    case 'flash':
+    case 'flash': {
       // Flash effect - full-screen flash
-      if (!config.enabled) return null;
+      if (!config.enabled) {
+        return null;
+      }
 
       return (
         <FlashEffect
@@ -67,10 +68,13 @@ export function VisualEffectRenderer({ effect, config }: VisualEffectRendererPro
           }}
         />
       );
+    }
 
-    case 'pulse':
+    case 'pulse': {
       // Pulse effect - expanding shape
-      if (!config.enabled) return null;
+      if (!config.enabled) {
+        return null;
+      }
 
       return (
         <PulseEffect
@@ -85,10 +89,13 @@ export function VisualEffectRenderer({ effect, config }: VisualEffectRendererPro
           }}
         />
       );
+    }
 
-    case 'border':
+    case 'border': {
       // Border effect - shrinking border
-      if (!config.enabled) return null;
+      if (!config.enabled) {
+        return null;
+      }
 
       return (
         <BorderEffect
@@ -101,11 +108,13 @@ export function VisualEffectRenderer({ effect, config }: VisualEffectRendererPro
           }}
         />
       );
+    }
 
-    default:
+    default: {
       // TypeScript exhaustiveness check
       // This ensures we handle all cases in the discriminated union
       const _exhaustive: never = config;
       return null;
+    }
   }
 }

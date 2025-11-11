@@ -61,7 +61,9 @@ export function MetronomeOverlay({ playerState, initialConfig }: MetronomeOverla
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Only handle if not in input field
-      if (document.activeElement?.tagName === 'INPUT') return;
+      if (document.activeElement?.tagName === 'INPUT') {
+        return;
+      }
 
       if (e.key === 'm' && e.ctrlKey) {
         e.preventDefault();
