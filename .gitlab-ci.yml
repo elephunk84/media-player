@@ -43,7 +43,7 @@ cache:
 # Test stage - Run unit tests before building
 test:backend:
   stage: test
-  image: node:20-alpine
+  image: node:20
   before_script:
     - cd backend
     - npm ci --quiet
@@ -61,7 +61,7 @@ test:backend:
 
 test:frontend:
   stage: test
-  image: node:20-alpine
+  image: node:20
   before_script:
     - cd frontend
     - npm ci --quiet
