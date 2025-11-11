@@ -494,20 +494,32 @@ export class MediaLoaderService {
    */
   private compareMetadata(existing: MediaFile, newData: MediaFileData): boolean {
     // Compare file properties
-    if (existing.filePath !== newData.relativePath) return true;
-    if (existing.fileName !== newData.fileName) return true;
-    if (existing.fileSize !== newData.fileSize) return true;
-    if (existing.fileExtension !== newData.fileExtension) return true;
+    if (existing.filePath !== newData.relativePath) {
+      return true;
+    }
+    if (existing.fileName !== newData.fileName) {
+      return true;
+    }
+    if (existing.fileSize !== newData.fileSize) {
+      return true;
+    }
+    if (existing.fileExtension !== newData.fileExtension) {
+      return true;
+    }
 
     // Compare metadata
     const newMetadata = newData.metadata?.content || null;
     const existingMetadata = existing.metadata;
 
     // If one is null and other isn't, they're different
-    if ((newMetadata === null) !== (existingMetadata === null)) return true;
+    if ((newMetadata === null) !== (existingMetadata === null)) {
+      return true;
+    }
 
     // If both are null, they're the same
-    if (newMetadata === null && existingMetadata === null) return false;
+    if (newMetadata === null && existingMetadata === null) {
+      return false;
+    }
 
     // Compare metadata content (deep comparison)
     const newMetadataStr = JSON.stringify(newMetadata);

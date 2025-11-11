@@ -8,7 +8,6 @@
 import { MediaLoaderService } from '../MediaLoaderService';
 import { DatabaseAdapter } from '../../adapters/DatabaseAdapter';
 import { FileScanner, ScannedFile } from '../../utils/FileScanner';
-import { UUIDExtractor } from '../../utils/UUIDExtractor';
 import { MetadataReader } from '../../utils/MetadataReader';
 
 // Mock dependencies

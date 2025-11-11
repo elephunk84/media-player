@@ -19,9 +19,10 @@
  *   --help                   Display help information
  */
 
-import { createDatabaseAdapter } from '../adapters/DatabaseAdapter';
+import { createDatabaseAdapter } from '../adapters/factory';
 import { MigrationRunner } from '../migrations/MigrationRunner';
 import { MediaLoaderService, LoaderStatistics } from '../services/MediaLoaderService';
+import { getDatabaseType } from '../config/database';
 import path from 'path';
 
 /**
@@ -165,8 +166,10 @@ function formatDuration(ms: number): string {
 /**
  * Format file size in human-readable format
  */
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
+function _formatBytes(bytes: number): string {
+  if (bytes === 0) {
+    return '0 B';
+  }
 
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   const k = 1024;
@@ -256,7 +259,8 @@ async function main(): Promise<void> {
   try {
     // Initialize database adapter
     console.info('Initializing database connection...');
-    const adapter = createDatabaseAdapter();
+    const dbType = getDatabaseType();
+    const adapter = createDatabaseAdapter(dbType);
 
     // Run pending migrations
     console.info('Running database migrations...');
@@ -281,7 +285,7 @@ async function main(): Promise<void> {
     displayResults(stats);
 
     // Close database connection
-    await adapter.close();
+    await adapter.disconnect();
 
     // Exit with appropriate code
     if (stats.errors > 0 && stats.filesProcessed === 0) {
