@@ -17,7 +17,6 @@ variables:
   DEVELOPMENT_BRANCH: "development"
 
 include:
-
   - project: "ci/components/utils"
     ref: "main"
     file:
@@ -31,7 +30,6 @@ include:
 
 
 stages:
-  - version
   - test
   - docker
 
@@ -41,19 +39,6 @@ cache:
   paths:
     - backend/node_modules/
     - frontend/node_modules/
-
-semantic_release:
-  stage: version
-  extends: .semantic_release
-  needs:
-    - job: check_source_files
-      artifacts: true
-  artifacts:
-    paths:
-      - version.env
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_BRANCH == $MAIN_BRANCH'
 
 # Test stage - Run unit tests before building
 test:backend:
