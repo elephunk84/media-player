@@ -5,7 +5,7 @@
  * Prevents adding duplicates and shows loading states.
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 import { ClipWithVideo } from '../types/video';
 import './ClipSelector.css';

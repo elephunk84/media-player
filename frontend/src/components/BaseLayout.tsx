@@ -5,6 +5,7 @@
  * Includes navigation header and content outlet.
  */
 
+import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './BaseLayout.css';

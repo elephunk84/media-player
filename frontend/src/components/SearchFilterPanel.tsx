@@ -5,7 +5,7 @@
  * Supports text search, tag filtering, date ranges, and custom metadata.
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VideoFilters } from '../types/video';
 import './SearchFilterPanel.css';
 

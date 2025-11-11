@@ -5,6 +5,7 @@
  * Uses discriminated union pattern for type-safe rendering.
  */
 
+import React from 'react';
 import { FlashEffect } from './visualEffects/FlashEffect';
 import { PulseEffect } from './visualEffects/PulseEffect';
 import { BorderEffect } from './visualEffects/BorderEffect';

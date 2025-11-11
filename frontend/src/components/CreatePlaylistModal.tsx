@@ -5,7 +5,7 @@
  * Includes form validation and error handling.
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CreatePlaylistData } from '../types/playlist';
 import './CreatePlaylistModal.css';
 

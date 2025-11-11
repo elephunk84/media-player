@@ -5,6 +5,7 @@
  * Includes delete functionality with confirmation.
  */
 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Playlist } from '../types/playlist';
 import './PlaylistCard.css';

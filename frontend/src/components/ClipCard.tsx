@@ -5,6 +5,7 @@
  * Handles orphaned clips (source video unavailable).
  */
 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import type { ClipWithVideo } from '../types/video';
 import './ClipCard.css';

@@ -4,6 +4,7 @@
  * Displays clip markers on a timeline that can be clicked to seek to clip positions.
  */
 
+import React from 'react';
 import type { Clip } from '../types/video';
 import './ClipMarkerTimeline.css';
 

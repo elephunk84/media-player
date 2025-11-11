@@ -5,6 +5,7 @@
  * Used in grid layouts for video library browsing.
  */
 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Video } from '../types/video';
 import './VideoCard.css';
