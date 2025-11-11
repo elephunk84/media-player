@@ -94,7 +94,7 @@ docker_build:backend:
   extends: .docker_build
   variables:
     CONTEXT: "backend"
-    DOCKERFILE: "Dockerfile.prod"
+    DOCKERFILE: "backend/Dockerfile.prod"
     IMAGE: "${CI_REGISTRY_IMAGE}"
     TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
   needs:
@@ -105,7 +105,7 @@ docker_build:frontend:
   extends: .docker_build
   variables:
     CONTEXT: "frontend"
-    DOCKERFILE: "Dockerfile"
+    DOCKERFILE: "frontend/Dockerfile.prod"
     IMAGE: "${CI_REGISTRY_IMAGE}"
     TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
   needs:
