@@ -2,6 +2,7 @@
  * Unit tests for PulseEffect component
  */
 
+import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { PulseEffect } from '../PulseEffect';

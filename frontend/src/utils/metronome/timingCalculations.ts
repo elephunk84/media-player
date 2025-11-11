@@ -121,7 +121,8 @@ export function applyTempoChange(
       // Complete cycle every 2 minutes
       const range = config.maxBPM - config.minBPM;
       const cycles = elapsedMinutes / 2;
-      const phase = (cycles % 1) * Math.PI * 2;
+      // Start at minimum (-π/2) so sin starts at -1
+      const phase = (cycles % 1) * Math.PI * 2 - Math.PI / 2;
       newBPM = config.minBPM + (range / 2) * (1 + Math.sin(phase));
       break;
     }

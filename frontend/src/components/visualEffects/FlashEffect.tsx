@@ -5,7 +5,7 @@
  * Appears instantly at full opacity and fades out smoothly.
  */
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './FlashEffect.css';
 
 /**
