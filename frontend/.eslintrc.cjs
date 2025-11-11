@@ -37,7 +37,7 @@ module.exports = {
       'error',
       {
         argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
+        varsIgnorePattern: '^_|^React$',
       },
     ],
     '@typescript-eslint/no-explicit-any': 'warn',
