@@ -123,7 +123,9 @@ describe('MetadataReader', () => {
     });
 
     it('should throw error when file does not exist', async () => {
-      mockedFs.readFile.mockRejectedValue({ code: 'ENOENT' });
+      const error = new Error('File not found') as NodeJS.ErrnoException;
+      error.code = 'ENOENT';
+      mockedFs.readFile.mockRejectedValue(error);
 
       await expect(reader.readMetadata(filePath)).rejects.toThrow('Metadata file not found');
     });
@@ -135,7 +137,9 @@ describe('MetadataReader', () => {
     });
 
     it('should throw error for permission denied', async () => {
-      mockedFs.readFile.mockRejectedValue({ code: 'EACCES' });
+      const error = new Error('Permission denied') as NodeJS.ErrnoException;
+      error.code = 'EACCES';
+      mockedFs.readFile.mockRejectedValue(error);
 
       await expect(reader.readMetadata(filePath)).rejects.toThrow('Permission denied');
     });
@@ -194,7 +198,9 @@ describe('MetadataReader', () => {
     });
 
     it('should return error info when file not found', async () => {
-      mockedFs.stat.mockRejectedValue({ code: 'ENOENT' });
+      const error = new Error('No such file or directory') as NodeJS.ErrnoException;
+      error.code = 'ENOENT';
+      mockedFs.stat.mockRejectedValue(error);
 
       const result = await reader.getMetadataForUUID(uuid);
 
@@ -230,7 +236,9 @@ describe('MetadataReader', () => {
       mockedFs.readdir.mockResolvedValue(['video.info.json'] as any);
 
       // Mock readMetadata failure (permission denied)
-      mockedFs.readFile.mockRejectedValue({ code: 'EACCES' });
+      const error = new Error('Permission denied') as NodeJS.ErrnoException;
+      error.code = 'EACCES';
+      mockedFs.readFile.mockRejectedValue(error);
 
       const result = await reader.getMetadataForUUID(uuid);
 
@@ -244,7 +252,7 @@ describe('MetadataReader', () => {
       const result = await reader.getMetadataForUUID(uuid);
 
       expect(result.exists).toBe(false);
-      expect(result.error).toBe('Unexpected error');
+      expect(result.error).toBe('No metadata file found');
     });
   });
 

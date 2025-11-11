@@ -43,13 +43,30 @@ describe('VideoService', () => {
       const videoFiles = ['video1.mp4', 'video2.mkv'];
       const fullPaths = videoFiles.map((f) => path.join(mountPath, f));
 
-      // Mock fs.readdir
-      (fs.readdir as jest.Mock).mockResolvedValue(videoFiles);
+      // Mock fs.readdir with withFileTypes
+      (fs.readdir as jest.Mock).mockResolvedValue(
+        videoFiles.map((name) => ({
+          name,
+          isFile: () => true,
+          isDirectory: () => false,
+          isSymbolicLink: () => false,
+        }))
+      );
 
-      // Mock fs.stat for each file
-      (fs.stat as jest.Mock).mockResolvedValue({
-        isFile: () => true,
-        size: 1024 * 1024 * 100, // 100MB
+      // Mock fs.stat - different behavior for directory vs files
+      (fs.stat as jest.Mock).mockImplementation((filePath: string) => {
+        if (filePath === mountPath || filePath === path.resolve(mountPath)) {
+          return Promise.resolve({
+            isFile: () => false,
+            isDirectory: () => true,
+          });
+        }
+        return Promise.resolve({
+          isFile: () => true,
+          isDirectory: () => false,
+          size: 1024 * 1024 * 100, // 100MB
+          mtime: new Date(),
+        });
       });
 
       // Mock database checks - video doesn't exist
@@ -78,18 +95,39 @@ describe('VideoService', () => {
 
       const result = await videoService.scanVideos(mountPath);
 
-      expect(fs.readdir).toHaveBeenCalledWith(mountPath);
+      expect(fs.readdir).toHaveBeenCalledWith(
+        path.resolve(mountPath),
+        { withFileTypes: true }
+      );
       // Note: FFmpegService is created internally and cannot be mocked without DI
       // This test will only pass if ffmpeg is installed on the system
       expect(result.length).toBeGreaterThanOrEqual(0);
     });
 
     it('should skip non-video files', async () => {
-      (fs.readdir as jest.Mock).mockResolvedValue(['video.mp4', 'readme.txt', 'image.jpg']);
+      const files = ['video.mp4', 'readme.txt', 'image.jpg'];
+      (fs.readdir as jest.Mock).mockResolvedValue(
+        files.map((name) => ({
+          name,
+          isFile: () => true,
+          isDirectory: () => false,
+          isSymbolicLink: () => false,
+        }))
+      );
 
-      (fs.stat as jest.Mock).mockResolvedValue({
-        isFile: () => true,
-        size: 1024,
+      (fs.stat as jest.Mock).mockImplementation((filePath: string) => {
+        if (filePath === mountPath || filePath === path.resolve(mountPath)) {
+          return Promise.resolve({
+            isFile: () => false,
+            isDirectory: () => true,
+          });
+        }
+        return Promise.resolve({
+          isFile: () => true,
+          isDirectory: () => false,
+          size: 1024,
+          mtime: new Date(),
+        });
       });
 
       mockAdapter.query.mockResolvedValue([]);
@@ -102,6 +140,21 @@ describe('VideoService', () => {
 
     it('should handle empty directory', async () => {
       (fs.readdir as jest.Mock).mockResolvedValue([]);
+
+      (fs.stat as jest.Mock).mockImplementation((filePath: string) => {
+        if (filePath === mountPath || filePath === path.resolve(mountPath)) {
+          return Promise.resolve({
+            isFile: () => false,
+            isDirectory: () => true,
+          });
+        }
+        return Promise.resolve({
+          isFile: () => true,
+          isDirectory: () => false,
+          size: 1024,
+          mtime: new Date(),
+        });
+      });
 
       const result = await videoService.scanVideos(mountPath);
 
