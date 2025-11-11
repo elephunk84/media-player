@@ -95,7 +95,7 @@ docker_build:backend:
   variables:
     CONTEXT: "backend"
     DOCKERFILE: "backend/Dockerfile.prod"
-    IMAGE: "${CI_REGISTRY_IMAGE}"
+    IMAGE: "${CI_REGISTRY_IMAGE}/backend"
     TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
   needs:
     - job: test:backend
@@ -106,7 +106,7 @@ docker_build:frontend:
   variables:
     CONTEXT: "frontend"
     DOCKERFILE: "frontend/Dockerfile.prod"
-    IMAGE: "${CI_REGISTRY_IMAGE}"
+    IMAGE: "${CI_REGISTRY_IMAGE}/frontend"
     TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
   needs:
     - job: test:frontend
