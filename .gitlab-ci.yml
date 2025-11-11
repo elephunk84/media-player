@@ -86,7 +86,7 @@ docker_build:backend:
     IMAGE: "${CI_REGISTRY_IMAGE}"
     TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
   needs:
-    - job: build_python
+    - job: test:backend
 
 docker_build:frontend:
   stage: docker
@@ -97,7 +97,7 @@ docker_build:frontend:
     IMAGE: "${CI_REGISTRY_IMAGE}"
     TAGS: "${CI_COMMIT_BRANCH},latest-${CI_COMMIT_BRANCH}"
   needs:
-    - job: build_python
+    - job: test:frontend
 
 telegram:on_success:
   stage: .post
