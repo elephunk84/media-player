@@ -116,7 +116,9 @@ export default function PlaylistDetailPage() {
    * Handle deleting the playlist
    */
   const handleDeletePlaylist = async () => {
-    if (!playlist) return;
+    if (!playlist) {
+      return;
+    }
 
     if (!window.confirm(`Are you sure you want to delete playlist "${playlist.name}"?`)) {
       return;

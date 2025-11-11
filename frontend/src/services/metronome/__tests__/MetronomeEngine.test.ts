@@ -5,7 +5,17 @@
  */
 
 import { MetronomeEngine } from '../MetronomeEngine';
-import type { MetronomeConfig, BeatInfo } from '../../../types/metronome';
+import type { MetronomeConfig, BeatInfo, BeatIntensity } from '../../../types/metronome';
+
+// Type for accessing private properties in tests
+type MetronomeEngineTestable = MetronomeEngine & {
+  audioContext: AudioContext | null;
+  currentBeatInPattern: number;
+  paused: boolean;
+  nextBeatTime: number;
+  config: MetronomeConfig | null;
+  beatListeners: Array<(beatInfo: BeatInfo) => void>;
+};
 
 // Mock Web Audio API
 const mockAudioContext = {
@@ -21,14 +31,14 @@ const originalSetTimeout = global.setTimeout;
 const originalClearTimeout = global.clearTimeout;
 
 // Track scheduled timeouts for testing
-let scheduledTimeouts: Array<{ callback: Function; delay: number; id: number }> = [];
+let scheduledTimeouts: Array<{ callback: () => void; delay: number; id: number }> = [];
 let nextTimeoutId = 1;
 
 describe('MetronomeEngine', () => {
   beforeAll(() => {
     // Mock AudioContext
-    (global as any).AudioContext = jest.fn(() => mockAudioContext);
-    (global as any).webkitAudioContext = jest.fn(() => mockAudioContext);
+    (global as typeof globalThis & { AudioContext: typeof AudioContext }).AudioContext = jest.fn(() => mockAudioContext);
+    (global as typeof globalThis & { webkitAudioContext: typeof AudioContext }).webkitAudioContext = jest.fn(() => mockAudioContext);
   });
 
   beforeEach(() => {
@@ -42,11 +52,11 @@ describe('MetronomeEngine', () => {
     nextTimeoutId = 1;
 
     // Mock setTimeout to track scheduled beats
-    global.setTimeout = jest.fn((callback: Function, delay: number) => {
+    global.setTimeout = jest.fn((callback: () => void, delay: number) => {
       const id = nextTimeoutId++;
       scheduledTimeouts.push({ callback, delay, id });
-      return id as any;
-    });
+      return id as unknown as NodeJS.Timeout;
+    }) as typeof setTimeout;
 
     global.clearTimeout = jest.fn((id: number) => {
       scheduledTimeouts = scheduledTimeouts.filter(t => t.id !== id);
@@ -67,24 +77,26 @@ describe('MetronomeEngine', () => {
     });
 
     test('throws error if Web Audio API is not supported', () => {
-      const originalAudioContext = (global as any).AudioContext;
-      (global as any).AudioContext = undefined;
-      (global as any).webkitAudioContext = undefined;
+      const globalWithAudio = global as typeof globalThis & { AudioContext: typeof AudioContext; webkitAudioContext: typeof AudioContext };
+      const originalAudioContext = globalWithAudio.AudioContext;
+      globalWithAudio.AudioContext = undefined as unknown as typeof AudioContext;
+      globalWithAudio.webkitAudioContext = undefined as unknown as typeof AudioContext;
 
       expect(() => new MetronomeEngine()).toThrow('Web Audio API not supported');
 
-      (global as any).AudioContext = originalAudioContext;
+      globalWithAudio.AudioContext = originalAudioContext;
     });
 
     test('handles AudioContext initialization failure', () => {
-      const originalAudioContext = (global as any).AudioContext;
-      (global as any).AudioContext = jest.fn(() => {
+      const globalWithAudio = global as typeof globalThis & { AudioContext: typeof AudioContext };
+      const originalAudioContext = globalWithAudio.AudioContext;
+      globalWithAudio.AudioContext = jest.fn(() => {
         throw new Error('Context creation failed');
-      });
+      }) as typeof AudioContext;
 
       expect(() => new MetronomeEngine()).toThrow('Failed to initialize AudioContext');
 
-      (global as any).AudioContext = originalAudioContext;
+      globalWithAudio.AudioContext = originalAudioContext;
     });
   });
 
@@ -122,7 +134,7 @@ describe('MetronomeEngine', () => {
 
     test('throws error if AudioContext is not initialized', () => {
       const brokenEngine = new MetronomeEngine();
-      (brokenEngine as any).audioContext = null;
+      (brokenEngine as MetronomeEngineTestable).audioContext = null;
 
       expect(() => brokenEngine.start(config)).toThrow('AudioContext not initialized');
     });
@@ -162,7 +174,7 @@ describe('MetronomeEngine', () => {
     test('resets beat position', () => {
       engine.start(config);
       // Manually advance beat position
-      (engine as any).currentBeatInPattern = 5;
+      (engine as MetronomeEngineTestable).currentBeatInPattern = 5;
 
       engine.stop();
       expect(engine.getCurrentBeat()).toBe(0);
@@ -188,12 +200,12 @@ describe('MetronomeEngine', () => {
 
       engine.pause();
       expect(engine.isRunning()).toBe(false);
-      expect((engine as any).paused).toBe(true);
+      expect((engine as MetronomeEngineTestable).paused).toBe(true);
     });
 
     test('pause() maintains beat position', () => {
       engine.start(config);
-      (engine as any).currentBeatInPattern = 3;
+      (engine as MetronomeEngineTestable).currentBeatInPattern = 3;
 
       engine.pause();
       expect(engine.getCurrentBeat()).toBe(3);
@@ -201,7 +213,7 @@ describe('MetronomeEngine', () => {
 
     test('resume() restarts scheduling from paused position', () => {
       engine.start(config);
-      (engine as any).currentBeatInPattern = 3;
+      (engine as MetronomeEngineTestable).currentBeatInPattern = 3;
       engine.pause();
 
       scheduledTimeouts = []; // Clear old timeouts
@@ -213,7 +225,7 @@ describe('MetronomeEngine', () => {
 
     test('resume() does nothing if not paused', () => {
       engine.start(config);
-      const timeouts Before = scheduledTimeouts.length;
+      const timeoutsBefore = scheduledTimeouts.length;
 
       engine.resume(); // Call resume without pause
 
@@ -233,7 +245,8 @@ describe('MetronomeEngine', () => {
       engine.resume();
 
       // Next beat time should be adjusted
-      const nextBeatTime = (engine as any).nextBeatTime;
+      const testableEngine = engine as MetronomeEngineTestable;
+      const nextBeatTime: number = testableEngine.nextBeatTime;
       expect(nextBeatTime).toBeGreaterThan(pauseTime);
     });
   });
@@ -347,15 +360,16 @@ describe('MetronomeEngine', () => {
 
     test('updateBPM() changes BPM in real-time', () => {
       engine.start(config);
-      expect((engine as any).config.bpm).toBe(60);
+      const testableEngine = engine as MetronomeEngineTestable;
+      expect(testableEngine.config!.bpm).toBe(60);
 
       engine.updateBPM(120);
-      expect((engine as any).config.bpm).toBe(120);
+      expect(testableEngine.config!.bpm).toBe(120);
     });
 
     test('updateBPM() does nothing if not started', () => {
       engine.updateBPM(120);
-      expect((engine as any).config).toBeNull();
+      expect((engine as MetronomeEngineTestable).config).toBeNull();
     });
   });
 
@@ -376,21 +390,22 @@ describe('MetronomeEngine', () => {
       engine.start(config);
 
       const newPattern = {
-        beats: ['strong', 'light', 'medium', 'light'] as any,
+        beats: ['strong', 'light', 'medium', 'light'] as BeatIntensity[],
         length: 4,
         accentBeat: 1,
       };
 
       engine.updatePattern(newPattern);
-      expect((engine as any).config.pattern).toEqual(newPattern);
+      const testableEngine = engine as MetronomeEngineTestable;
+      expect(testableEngine.config!.pattern).toEqual(newPattern);
     });
 
     test('updatePattern() wraps beat position if pattern is shorter', () => {
       engine.start(config);
-      (engine as any).currentBeatInPattern = 5;
+      (engine as MetronomeEngineTestable).currentBeatInPattern = 5;
 
       const shortPattern = {
-        beats: ['strong', 'light'] as any,
+        beats: ['strong', 'light'] as BeatIntensity[],
         length: 2,
         accentBeat: null,
       };
@@ -441,8 +456,8 @@ describe('MetronomeEngine', () => {
 
       expect(engine.isRunning()).toBe(false);
       expect(mockAudioContext.close).toHaveBeenCalled();
-      expect((engine as any).audioContext).toBeNull();
-      expect((engine as any).beatListeners).toEqual([]);
+      expect((engine as MetronomeEngineTestable).audioContext).toBeNull();
+      expect((engine as MetronomeEngineTestable).beatListeners).toEqual([]);
     });
   });
 

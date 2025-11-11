@@ -121,7 +121,9 @@ export default function ClipDetailPage() {
 
   // Playlist navigation handlers
   const handleNextClip = useCallback(() => {
-    if (!playlistState) return;
+    if (!playlistState) {
+      return;
+    }
 
     const nextIndex = playlistState.clipIndex + 1;
     if (nextIndex < playlistState.clips.length) {
@@ -136,7 +138,9 @@ export default function ClipDetailPage() {
   }, [playlistState, navigate]);
 
   const handlePreviousClip = useCallback(() => {
-    if (!playlistState) return;
+    if (!playlistState) {
+      return;
+    }
 
     const prevIndex = playlistState.clipIndex - 1;
     if (prevIndex >= 0) {
