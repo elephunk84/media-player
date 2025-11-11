@@ -1,6 +1,10 @@
 # GitLab CI/CD Pipeline for Media Player Application
 # Builds and publishes Docker images to GitLab Container Registry
 
+# Default image for all jobs unless overridden
+default:
+  image: node:20
+
 variables:
   # Docker image names in GitLab Container Registry
   BACKEND_IMAGE: ${CI_REGISTRY_IMAGE}/backend
@@ -45,6 +49,7 @@ test:backend:
   stage: test
   image: node:20
   before_script:
+    - node --version && npm --version  # Verify node and npm are available
     - cd backend
     - npm ci --quiet
   script:
@@ -58,11 +63,15 @@ test:backend:
     key: ${CI_COMMIT_REF_SLUG}-backend
     paths:
       - backend/node_modules/
+  tags:
+    - docker
+    - localhost  # Force docker executor if available
 
 test:frontend:
   stage: test
   image: node:20
   before_script:
+    - node --version && npm --version  # Verify node and npm are available
     - cd frontend
     - npm ci --quiet
   script:
@@ -76,6 +85,9 @@ test:frontend:
     key: ${CI_COMMIT_REF_SLUG}-frontend
     paths:
       - frontend/node_modules/
+  tags:
+    - docker
+    - localhost  # Force docker executor if available
 
 docker_build:backend:
   stage: docker
