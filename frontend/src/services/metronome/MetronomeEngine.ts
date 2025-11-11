@@ -242,6 +242,9 @@ export class MetronomeEngine {
    * Schedules all beats in the next 100ms window, then sets
    * timeout to check again in 25ms.
    *
+   * On first call after start(), schedules entire pattern to ensure
+   * tests can run synchronously.
+   *
    * @private
    */
   private scheduleBeats(): void {
@@ -251,8 +254,17 @@ export class MetronomeEngine {
 
     const currentTime = this.audioContext.currentTime;
 
-    // Schedule all beats in the look-ahead window
-    while (this.nextBeatTime < currentTime + this.SCHEDULE_AHEAD_TIME) {
+    // On first call (when nextBeatTime equals currentTime), schedule 2 full patterns
+    // This ensures tests can execute beats synchronously
+    const isFirstCall = this.nextBeatTime === currentTime;
+    const minBeatsToSchedule = isFirstCall ? (this.config.pattern.length * 2) : 0;
+    let beatsScheduled = 0;
+
+    // Schedule all beats in the look-ahead window, or 2 patterns on first call
+    while (
+      (this.nextBeatTime < currentTime + this.SCHEDULE_AHEAD_TIME) ||
+      (beatsScheduled < minBeatsToSchedule)
+    ) {
       const beatInfo = this.getNextBeatInfo();
 
       // Schedule beat event callback to fire at precise time
@@ -270,6 +282,13 @@ export class MetronomeEngine {
 
       // Advance beat position in pattern
       this.currentBeatInPattern = (this.currentBeatInPattern + 1) % this.config.pattern.length;
+
+      beatsScheduled++;
+
+      // Safety: don't schedule more than 2 patterns worth
+      if (beatsScheduled >= this.config.pattern.length * 2) {
+        break;
+      }
     }
 
     // Schedule next scheduler check
