@@ -18,6 +18,11 @@ import {
 import { FileScanner, ScannedFile } from '../utils/FileScanner';
 import { UUIDExtractor } from '../utils/UUIDExtractor';
 import { MetadataReader } from '../utils/MetadataReader';
+import { TagManager } from '../utils/TagManager';
+import { CategoryManager } from '../utils/CategoryManager';
+import { PerformerManager } from '../utils/PerformerManager';
+import { parseRichMetadata, validateMetadata } from '../utils/MetadataParser';
+import { ParsedRichMetadata } from '../models/RichMetadata';
 
 /**
  * Options for configuring the media loader
@@ -99,6 +104,26 @@ export interface LoaderStatistics {
   recordsUnchanged: number;
 
   /**
+   * Number of tags created
+   */
+  tagsCreated: number;
+
+  /**
+   * Number of categories created
+   */
+  categoriesCreated: number;
+
+  /**
+   * Number of performers created
+   */
+  performersCreated: number;
+
+  /**
+   * Number of associations created (tags + categories + performers)
+   */
+  associationsCreated: number;
+
+  /**
    * Number of errors encountered
    */
   errors: number;
@@ -149,6 +174,9 @@ export class MediaLoaderService {
   private adapter: DatabaseAdapter;
   private fileScanner: FileScanner;
   private metadataReader: MetadataReader;
+  private tagManager: TagManager;
+  private categoryManager: CategoryManager;
+  private performerManager: PerformerManager;
   private options: Required<MediaLoaderOptions>;
 
   /**
@@ -169,6 +197,9 @@ export class MediaLoaderService {
 
     this.fileScanner = new FileScanner();
     this.metadataReader = new MetadataReader(this.options.metadataPath);
+    this.tagManager = new TagManager(adapter);
+    this.categoryManager = new CategoryManager(adapter);
+    this.performerManager = new PerformerManager(adapter);
   }
 
   /**
@@ -189,6 +220,21 @@ export class MediaLoaderService {
           ? (JSON.parse(row.metadata) as Record<string, unknown>)
           : (row.metadata as Record<string, unknown>) || null,
       metadataFilePath: row.metadata_file_path,
+      // Rich metadata fields
+      displayName: row.display_name,
+      provider: row.provider,
+      providerId: row.provider_id,
+      webpageUrl: row.webpage_url,
+      thumbnail: row.thumbnail,
+      duration: row.duration,
+      downloadedFormat: row.downloaded_format,
+      availableFormats:
+        typeof row.available_formats === 'string' && row.available_formats
+          ? (JSON.parse(row.available_formats) as string[])
+          : (row.available_formats as string[]) || null,
+      creator: row.creator,
+      primaryTagId: row.primary_tag_id,
+      // Timestamps
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
       lastScannedAt: new Date(row.last_scanned_at),
@@ -221,6 +267,10 @@ export class MediaLoaderService {
       recordsInserted: 0,
       recordsUpdated: 0,
       recordsUnchanged: 0,
+      tagsCreated: 0,
+      categoriesCreated: 0,
+      performersCreated: 0,
+      associationsCreated: 0,
       errors: 0,
       errorMessages: [],
       startTime: new Date(),
@@ -296,6 +346,149 @@ export class MediaLoaderService {
 
       throw error;
     }
+  }
+
+  /**
+   * Process rich metadata for a media file
+   *
+   * Parses metadata, updates media_files columns, and syncs associations.
+   * Handles errors gracefully to prevent batch processing interruption.
+   *
+   * @param uuid - Media file UUID
+   * @param metadata - Raw metadata object from .info.json
+   * @param stats - Statistics object to update
+   */
+  private async processRichMetadata(
+    uuid: string,
+    metadata: Record<string, unknown>,
+    stats: LoaderStatistics
+  ): Promise<void> {
+    try {
+      // Parse rich metadata
+      const parsed = parseRichMetadata(metadata);
+
+      // Validate parsed metadata (log warnings but continue)
+      const validation = validateMetadata(parsed);
+      if (validation.warnings.length > 0 && this.options.verbose) {
+        console.warn(`Metadata warnings for ${uuid}:`, validation.warnings);
+      }
+      if (!validation.valid) {
+        stats.errorMessages.push(`Metadata validation errors for ${uuid}: ${validation.errors.join(', ')}`);
+      }
+
+      // Update media_files columns with rich metadata
+      await this.updateRichMetadataColumns(uuid, parsed);
+
+      // Sync associations (tags, categories, performers)
+      await this.syncAssociations(uuid, parsed, stats);
+
+      // Update primary_tag_id if primary tag exists
+      if (parsed.primaryTag) {
+        try {
+          const primaryTagId = await this.tagManager.findOrCreateTag(parsed.primaryTag);
+          await this.adapter.execute('UPDATE media_files SET primary_tag_id = ? WHERE uuid = ?', [
+            primaryTagId,
+            uuid,
+          ]);
+        } catch (error) {
+          if (this.options.verbose) {
+            console.warn(`Failed to set primary tag for ${uuid}:`, error);
+          }
+        }
+      }
+    } catch (error) {
+      const errorMsg = `Error processing rich metadata for ${uuid}: ${error instanceof Error ? error.message : String(error)}`;
+      stats.errorMessages.push(errorMsg);
+      if (this.options.verbose) {
+        console.error(errorMsg);
+      }
+      // Don't throw - allow batch processing to continue
+    }
+  }
+
+  /**
+   * Update rich metadata columns in media_files table
+   *
+   * @param uuid - Media file UUID
+   * @param parsed - Parsed rich metadata
+   */
+  private async updateRichMetadataColumns(
+    uuid: string,
+    parsed: ParsedRichMetadata
+  ): Promise<void> {
+    await this.adapter.execute(
+      `UPDATE media_files
+       SET display_name = ?, provider = ?, provider_id = ?, webpage_url = ?,
+           thumbnail = ?, duration = ?, downloaded_format = ?, available_formats = ?,
+           creator = ?
+       WHERE uuid = ?`,
+      [
+        parsed.displayName,
+        parsed.provider,
+        parsed.providerId,
+        parsed.webpageUrl,
+        parsed.thumbnail,
+        parsed.duration,
+        parsed.downloadedFormat,
+        parsed.availableFormats.length > 0 ? JSON.stringify(parsed.availableFormats) : null,
+        parsed.creator,
+        uuid,
+      ]
+    );
+  }
+
+  /**
+   * Sync associations for a media file (tags, categories, performers)
+   *
+   * Creates associations in junction tables using manager utilities.
+   *
+   * @param uuid - Media file UUID
+   * @param parsed - Parsed rich metadata
+   * @param stats - Statistics object to update
+   */
+  private async syncAssociations(
+    uuid: string,
+    parsed: ParsedRichMetadata,
+    stats: LoaderStatistics
+  ): Promise<void> {
+    // Track counts before syncing
+    const tagCountBefore = (await this.tagManager.getAllTags()).length;
+    const categoryCountBefore = (await this.categoryManager.getAllCategories()).length;
+    const performerCountBefore = (await this.performerManager.getAllPerformers()).length;
+
+    // Sync tags
+    if (parsed.tags.length > 0) {
+      await this.tagManager.syncMediaFileTags(uuid, parsed.tags);
+      stats.associationsCreated += parsed.tags.length;
+    } else {
+      await this.tagManager.removeMediaFileAssociations(uuid);
+    }
+
+    // Sync categories
+    if (parsed.categories.length > 0) {
+      await this.categoryManager.syncMediaFileCategories(uuid, parsed.categories);
+      stats.associationsCreated += parsed.categories.length;
+    } else {
+      await this.categoryManager.removeMediaFileAssociations(uuid);
+    }
+
+    // Sync performers
+    if (parsed.performers.length > 0) {
+      await this.performerManager.syncMediaFilePerformers(uuid, parsed.performers);
+      stats.associationsCreated += parsed.performers.length;
+    } else {
+      await this.performerManager.removeMediaFileAssociations(uuid);
+    }
+
+    // Track counts after syncing
+    const tagCountAfter = (await this.tagManager.getAllTags()).length;
+    const categoryCountAfter = (await this.categoryManager.getAllCategories()).length;
+    const performerCountAfter = (await this.performerManager.getAllPerformers()).length;
+
+    // Update statistics
+    stats.tagsCreated += tagCountAfter - tagCountBefore;
+    stats.categoriesCreated += categoryCountAfter - categoryCountBefore;
+    stats.performersCreated += performerCountAfter - performerCountBefore;
   }
 
   /**
@@ -386,6 +579,11 @@ export class MediaLoaderService {
       if (this.options.verbose) {
         console.info(`Inserted: ${uuid}`);
       }
+    }
+
+    // Process rich metadata if available
+    if (metadataResult.exists && metadataResult.content) {
+      await this.processRichMetadata(uuid, metadataResult.content, stats);
     }
   }
 
@@ -540,6 +738,9 @@ export class MediaLoaderService {
         `Metadata: ${stats.filesWithMetadata} | ` +
         `Inserted: ${stats.recordsInserted} | ` +
         `Updated: ${stats.recordsUpdated} | ` +
+        `Tags: ${stats.tagsCreated} | ` +
+        `Categories: ${stats.categoriesCreated} | ` +
+        `Performers: ${stats.performersCreated} | ` +
         `Errors: ${stats.errors}`
     );
   }
